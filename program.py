@@ -6,13 +6,15 @@ import csv
 courses, rooms, studentCourses, studentNames, teachers = [], [], [], [], []
 countCourseRegisteredStudents = {}
 
+fileDir = './actual_dataset/'
+
 def importFiles():
     global courses, rooms, studentCourses, studentNames, teachers
-    courses = pd.read_csv(r'./courses.csv')
-    rooms = pd.read_csv(r'./rooms.csv')
-    studentCourses = pd.read_csv(r'./studentCourses.csv')
-    studentNames = pd.read_csv(r'./studentNames.csv')
-    teachers = pd.read_csv(r'./teachers.csv')
+    courses = pd.read_csv(fileDir + 'courses.csv')
+    rooms = pd.read_csv(fileDir + 'rooms.csv')
+    studentCourses = pd.read_csv(fileDir +'studentCourses.csv')
+    studentNames = pd.read_csv(fileDir +'studentNames.csv')
+    teachers = pd.read_csv(fileDir +'teachers.csv')
 
 def countStudentsInCourse():
     global studentCourses, courses, countCourseRegisteredStudents

@@ -1,0 +1,82 @@
+Problem
+
+1.	Random Solution 
+2.	Cost Function -> How good of a solution. 
+
+3.	While loop
+
+4.	New_Solution = Neighboring Solution (Current_Solution)
+
+5.	New_Solution_Cost = CostFunction (New_Solution) 
+
+6.	If New_Solution > Cost_Solution:
+
+7.	Curent Solution = New_Solution
+
+8.	Current_Cost = New_Solution_Cost
+
+9.	If Current Solution > Best Solution: Best_Solution = Current_Solution
+
+10.	Else Probability > 0.5 => Current_Solution = New_Solution
+
+
+1.	Read Data
+Course, Course_Registered_Students
+Teachers
+Rooms
+
+2.	Exams -> End result
+Course
+Room
+Teacher
+Day & Time
+3.	Random Solution
+Every course must be scheduled (randomly). Assign Room randomly and teacher randomly. 
+
+4.	Cost Value/Fitness Value. 
+
+Get_Cost_Value (Solution) 
+courses_scheduled = Check_Course_Schedule(Solution); 
+student_clashes = check_student_clash(Solution); 
+Return Courses_scheuled + student_clashes * 10 + teacher_clashes * 10 + consecutive_exams * 0.5
+
+Optimization Functions
+1.	Check_Course_Schedule (Solution)
+return number_of_course_not_scheduled; 
+2.	check_student_clash(Solution):
+
+1.	Economics -> Students_Registered
+2.	Communication -> Students_Registered
+
+	Return number_of_students_clashes; 
+3.	Check_teacher_clash (Solution):
+return teacher_clashes
+
+
+1 Student -> Course[0], Course[5], Course[10]
+
+
+1st Solution: 50 Student Clashes, 10 Consectuive Exams 
+2nd Solution: 25 Student Clashes, 150 Consecutive Exams  
+
+
+Neighbouring Solutions 
+
+Exams[100].day, Exam[100].time
+Randomly Pick Exam 
+Exam[1].day = rand
+Exam[1], Exam[20]
+
+
+Solution 1 -> Solution 2, Solutino 3, Solution 4 
+K = 2 
+Queue = [2, 3]
+Solution 2 -> 6, 7, 8
+
+Queue = [3, 6]
+
+Solution 3 => 9, 10, 11
+
+Queue = [6]
+
+Solution 6 => 
