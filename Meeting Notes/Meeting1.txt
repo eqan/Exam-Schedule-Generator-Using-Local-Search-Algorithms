@@ -1,0 +1,25 @@
+Files -> calculate students enrolled -> Randomly -> Ranodm Course Total Capacity + Other Courses Capacity [Tuple] < 280 && > 250 -> Random Solution
+
+Solution -> Table Form
+
+-> Random solution bs exams scheduled for 2-3 weeks
+
+
+-> Solution for 2-3 weeks X
+-> Cost Function X
+-> Constraints X
+-> Weights X
+-> How to check how much soft constraints have been fulfilled X
+
+
+
+-> Store Hard and soft constraint in a list
+-> Each exam has 3 Hour -> 2 Exams Max per day -> Break allow
+
+-> Hard Constraint -> [Perfect Solution] -> 
+-> Soft Constraint -> [Best Solution] ->
+
+
+-> Return solution
+
+LOGIC <-

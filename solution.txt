@@ -3,6 +3,7 @@ Problem
 1.	Random Solution 
 2.	Cost Function -> How good of a solution. 
 
+
 3.	While loop
 
 4.	New_Solution = Neighboring Solution (Current_Solution)
@@ -20,7 +21,7 @@ Problem
 10.	Else Probability > 0.5 => Current_Solution = New_Solution
 
 
-1.	Read Data
+1.	Read Data -> INput
 Course, Course_Registered_Students
 Teachers
 Rooms
@@ -30,7 +31,8 @@ Course
 Room
 Teacher
 Day & Time
-3.	Random Solution
+
+3.	Random Solution 
 Every course must be scheduled (randomly). Assign Room randomly and teacher randomly. 
 
 4.	Cost Value/Fitness Value. 
@@ -40,17 +42,66 @@ courses_scheduled = Check_Course_Schedule(Solution);
 student_clashes = check_student_clash(Solution); 
 Return Courses_scheuled + student_clashes * 10 + teacher_clashes * 10 + consecutive_exams * 0.5
 
-Optimization Functions
-1.	Check_Course_Schedule (Solution)
-return number_of_course_not_scheduled; 
+Hard Optimization Functions
+1.	Check_Course_Schedule (Solution) -> Solution === 2 ya 3 hafton
+	for course in courses:
+		if course in courses_schudled:
+			count++
+	return count
+			
+return number_of_course_not_scheduled;
+
 2.	check_student_clash(Solution):
 
 1.	Economics -> Students_Registered
 2.	Communication -> Students_Registered
 
+	1 day 2 exams prob and comm
+	student in these 2 exams
+	which student has both exams at the same time
+	count++
+	return count 
+
 	Return number_of_students_clashes; 
 3.	Check_teacher_clash (Solution):
+	First pick 10 Teachers
+	1 Time  10 Rooms
+	1 Teacher -> 1 Room
+	Next 10 Teachers
+	1 Time  10 Rooms
+	1 Teacher -> 1 Room
+	
+	return count
+
 return teacher_clashes
+
+Soft Optimization Functions
+
+Student A
+Day 1  = Prob Pak
+
+Day 13 no consecutive
+Comm LA
+
+
+Prob Comm
+La Pak
+
+check_consecutive_exams(result)
+
+
+check_consecutive_exams(result):
+	if(threat(result)  == 0)
+		return result
+
+	day1 = Konsa din consecutive exams
+	day2 = No consecutive exams
+	result  = swap(1 Course of day1, 1 course of day2)
+	check_consecutive_exams(result)
+
+
+Utility Functions:
+	Filter_Students that are enrolled in less than 3 courses
 
 
 1 Student -> Course[0], Course[5], Course[10]
