@@ -28,5 +28,4 @@ def countStudentsInCourse():
 
 importFiles()
 countStudentsInCourse()
-# print(teachers)
 print(countCourseRegisteredStudents)
