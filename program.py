@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import csv
@@ -179,6 +180,26 @@ def createCombination(exam, remainingExamsList):
             result.append(exam)
             remainingExamsList.remove(exam)
     assignRoomTeacherAndTimeForAShift(result)
+
+def create_dataframe(examlist):
+    td = dict(examlist)
+    temp_list = list(td.keys())
+    temp_matrix=[]
+    x = 0
+    while x < len(temp_list)-1:
+        temp_row = []
+        temp_row.append(temp_list[x])
+        n = courses['Course Name'].where(courses['Course Code'] == temp_list[x])
+        temp_row.append(list(n.dropna())[0])
+        temp_row.append(temp_list[x+1])
+        n = courses['Course Name'].where(courses['Course Code'] == temp_list[x+1])
+        temp_row.append(list(n.dropna())[0])
+        temp_matrix.append(temp_row)
+        x=x+1
+
+    df = pd.DataFrame(temp_matrix,columns=['9:00 - 12:00', 'Course Name', '1:00 - 4:00', 'Course Name'])
+    pd.set_option('display.max_columns', None)
+    return df
 
 importFiles()
 setVariables()
