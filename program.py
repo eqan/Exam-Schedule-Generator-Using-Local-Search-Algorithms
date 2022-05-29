@@ -10,7 +10,7 @@ courses, rooms, studentCourses, studentNames, teachers = [], [], [], [], []
 countCourseRegisteredStudents = {}
 studentsLimit, numberOfRooms  = 0, 0
 currentDate = {'shift': 0, 'day': 0} #Hour Shift , Day 
-availableRooms, availableTeachers = [], []
+availableTeachers = []
 reserveExamList = []
 
 fileDir = './actual_dataset/'
@@ -58,9 +58,6 @@ def randomlyPickExamAndReturnListOfExams(entry_list):
     entry_list.remove(exam)
     return exam, entry_list
 
-def resetDataForNextDay():
-    return 1
-
 def determineShift(time):
     if(time == 9):
         return 0
@@ -77,8 +74,6 @@ def returnTimeAndDate():
         assignTimeStamp = 2
         currentDate['shift'] = 0
         currentDate['day'] += 1
-        resetDataForNextDay()
-
     return assignTimeStamp, assignDate
 
 def returnTeachersForAShift(shift):
@@ -113,6 +108,28 @@ def insertForFullValues(fullRooms, table, i):
             i+=1
     return fullRooms, table, i
 
+def readjustRoomNumbersOfTable(table, start):
+    global numberOfRooms
+    i = len(table)-1
+    listOfRooms = [x[1] for x in table]
+    if(table[i][1] > numberOfRooms):
+        while(i != 0):
+            j = start
+            courseCode, roomNumber = table[i]
+            # print((courseCode, roomNumber))
+            if(roomNumber > numberOfRooms):
+                while(j != i):
+                    if j not in listOfRooms:
+                        table.remove([courseCode, roomNumber])
+                        table.append([courseCode, j])
+                        break
+                    j+=1
+            else:
+                break
+            i-=1
+    table.sort(key=lambda s: s[1])
+    return table
+
 def insertForPartialValues(partialRooms, table, i):
     sum = 0
     partialCourseList = []
@@ -121,14 +138,10 @@ def insertForPartialValues(partialRooms, table, i):
         sum+=capacity
         if((sum > 1)): # For Multiple Class Rooms
             # partialCourseList.sort(key=lambda s: s[1])
-            # if(len(partialCourseList) > 0 and sum >= 0.9 and sum <=1):
             i+=1
             for courseCode2, capacity2 in partialCourseList:
                 table.append([courseCode2, i+1])
             partialCourseList = []
-            # if((sum-capacity <= 1)):
-            # i+=1
-            # table.append([courseCode, i+1])
             i+=1
             table.append([courseCode, i+1])
             sum = 0
@@ -150,14 +163,22 @@ def assignRoomTeacherAndTimeForAShift(result):
     partialRooms.sort(key=lambda s: s[1])
     fullRooms.sort(key=lambda s: s[1])
     # print(teachers)
-    print("Fully Filled Rooms: " + str(fullRooms))
-    print("Partial Filled Rooms: " + str(partialRooms))
     i = 0
     # For Full Rooms
     fullRooms, table, i = insertForFullValues(fullRooms, table, i)
     # For Half or less capacity rooms
     partialRooms, table, i = insertForPartialValues(partialRooms, table, i)
-    print("Resultant Table"+ str(table))
+    # print("Fully Filled Rooms: " + str(fullRooms))
+    # print("Partial Filled Rooms: " + str(partialRooms))
+    table = readjustRoomNumbersOfTable(table, len(fullRooms))
+    for exam in table:
+        # print(exam[1]-1)
+        exam.append(teachers[(exam[1]-1)])
+        exam.append(time)
+        exam.append(date)
+    if(determineShift(time) == 1):
+        importRandomTeachersForADay() # This imports new
+    print("Resultant Table: "+ str(table))
 
 def removeExamFromResult(result):
     global reserveExamList
@@ -179,9 +200,24 @@ def createCombination(exam, remainingExamsList):
             remainingExamsList.remove(exam)
     result = removeExamFromResult(result)
     assignRoomTeacherAndTimeForAShift(result)
+    return remainingExamsList
+
+def computeSchedule():
+    # global table
+    importRandomTeachersForADay()
+    exam, remainingExamsList = randomlyPickExamAndReturnListOfExams(convertDictionaryToList(countCourseRegisteredStudents))
+    remainingExamsList = createCombination(exam, remainingExamsList)
+    # print(table)
+    # while(len(remainingExamsList) > 0):
+    #     remainingExamsList = createCombination(exam, remainingExamsList)
+    # remainingExamsList = reserveExamList
+    # while(len(reserveExamList) > 0):
+    #     remainingExamsList = createCombination(exam, remainingExamsList)
+    # print("Resultant Table"+ str(table))
+    
 
 importFiles()
 setVariables()
-exam, remainingExamsList = randomlyPickExamAndReturnListOfExams(convertDictionaryToList(countCourseRegisteredStudents))
-importRandomTeachersForADay()
-createCombination(exam, remainingExamsList)
+# exam, remainingExamsList = randomlyPickExamAndReturnListOfExams(convertDictionaryToList(countCourseRegisteredStudents))
+# remainingExamsList = createCombination(exam, remainingExamsList)
+computeSchedule()
