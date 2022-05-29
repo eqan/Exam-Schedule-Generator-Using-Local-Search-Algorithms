@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import csv
@@ -106,6 +105,13 @@ def convertEnrolledStudentsToRooms(result):
             partialRooms.append((courseCode, floatValue))
     return partialRooms, fullRooms
 
+def insertForFullValues(fullRooms, table, date, time, teachers, i):
+    for courseCode, capacity in fullRooms:
+        for roomNumber in range(int(capacity)):
+            table.append((date, time, courseCode, teachers[i], i+1))
+            i+=1
+    return fullRooms, table, date, time, teachers, i
+
 def insertForPartialValues(sum , partialRooms, table, date, time, teachers, i):
     partialCourseList = []
     for courseCode, capacity in partialRooms:
@@ -114,12 +120,17 @@ def insertForPartialValues(sum , partialRooms, table, date, time, teachers, i):
         else:
             print("Not Found" + str((courseCode, capacity)))
         sum+=capacity
-        if(sum >=0.85):
+        if(sum >=0.85 and sum <= 1):
             for courseCode, capacity in partialCourseList:
                 table.append((date, time, courseCode, teachers[i], i+1))
             i+=1
             partialCourseList = []
-            sum = 0
+            sum = 1 - sum
+        elif(sum > 1):
+            for courseCode, capacity in partialCourseList:
+                table.append((date, time, courseCode, teachers[i], i+1))
+                i+=1
+            partialCourseList = []
         partialCourseList.append((courseCode, capacity))
     return sum , partialRooms, table, date, time, teachers, i
 
@@ -133,21 +144,17 @@ def assignRoomTeacherAndTimeForAShift(result):
     partialRooms.sort(key=lambda s: s[1])
     fullRooms.sort(key=lambda s: s[1])
     # print(teachers)
-    print("Fully Filled Rooms: " + str(fullRooms))
-    print("Partial Filled Rooms: " + str(partialRooms))
+    # print("Fully Filled Rooms: " + str(fullRooms))
+    # print("Partial Filled Rooms: " + str(partialRooms))
     i = 0
     # For Full Rooms
-    for courseCode, capacity in fullRooms:
-        for roomNumber in range(int(capacity)):
-            table.append((date, time, courseCode, teachers[i], i+1))
-            i+=1
-    # j = i
+    fullRooms, table, date, time, teachers, i = insertForFullValues(fullRooms, table, date, time, teachers, i)
     # For Half or less capacity rooms
-    print(teachers)
-    print("Partial Filled Rooms: " + str(partialRooms))
+    # print(teachers)
+    # print("Partial Filled Rooms: " + str(partialRooms))
     sum , partialRooms, table, date, time, teachers, i = insertForPartialValues(0, partialRooms, table, date, time, teachers, i)
     while(len(partialRooms) > 0):
-        print("Partial Filled Rooms: " + str(partialRooms))
+        # print("Partial Filled Rooms: " + str(partialRooms))
         try:
             if(len(partialRooms) == 1):
                 for courseCode, capacity in partialRooms:
@@ -163,7 +170,7 @@ def assignRoomTeacherAndTimeForAShift(result):
         except:
             print("Couldnt iterate over teachers")
             i-=1
-    print(studentsLimit)
+    # print(studentsLimit)
     print(table)
     # print(table2)
 
@@ -180,26 +187,6 @@ def createCombination(exam, remainingExamsList):
             result.append(exam)
             remainingExamsList.remove(exam)
     assignRoomTeacherAndTimeForAShift(result)
-
-def create_dataframe(examlist):
-    td = dict(examlist)
-    temp_list = list(td.keys())
-    temp_matrix=[]
-    x = 0
-    while x < len(temp_list)-1:
-        temp_row = []
-        temp_row.append(temp_list[x])
-        n = courses['Course Name'].where(courses['Course Code'] == temp_list[x])
-        temp_row.append(list(n.dropna())[0])
-        temp_row.append(temp_list[x+1])
-        n = courses['Course Name'].where(courses['Course Code'] == temp_list[x+1])
-        temp_row.append(list(n.dropna())[0])
-        temp_matrix.append(temp_row)
-        x=x+1
-
-    df = pd.DataFrame(temp_matrix,columns=['9:00 - 12:00', 'Course Name', '1:00 - 4:00', 'Course Name'])
-    pd.set_option('display.max_columns', None)
-    return df
 
 importFiles()
 setVariables()
