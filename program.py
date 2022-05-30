@@ -97,161 +97,100 @@ def convertStudentsToRooms(result):
         tempCapacity = capacity/totalCapcityOfARoom
         floatValue, decimalValue = math.modf(tempCapacity)
         # print(courseCode, tempCapacity ,decimalValue, floatValue)
-        if(round(decimalValue) != 0 or floatValue != 0):
+        if(int(decimalValue) != 0):
+            for j in range(int(decimalValue)):
+                fullRooms.append([courseCode, i+j])
+            i+=int(decimalValue)
+        if(floatValue != 0):
+            fullRooms.append([courseCode, i])
             i+=1
-            if(i>totalCapcityOfARoom):
-                reserveExamList.append((courseCode))
-            else:
-                fullRooms.append((courseCode, i))
     return fullRooms
 
-
-''' Functions for accurate calculation to assign rooms for students '''
-# def convertEnrolledStudentsToRooms(result):
-#     partialRooms = []
-#     fullRooms = []
-#     totalCapcityOfARoom = returnRoomCapacityOfARoom()
-#     for courseCode, capacity in result:
-#         tempCapacity = capacity/totalCapcityOfARoom
-#         floatValue, decimalValue = math.modf(tempCapacity)
-#         # print(courseCode, tempCapacity ,decimalValue, floatValue)
-#         if(round(decimalValue) != 0):
-#             fullRooms.append((courseCode, decimalValue))
-#         if(floatValue != 0):
-#             partialRooms.append((courseCode, floatValue))
-#     return partialRooms, fullRooms
-
-# def insertForFullValues(fullRooms, table, i):
-#     for courseCode, capacity in fullRooms:
-#         for roomNumber in range(int(capacity)):
-#             table.append([courseCode, i+1])
-#             i+=1
-#     return fullRooms, table, i
-
-# def readjustRoomNumbersOfTable(table, start):
-#     global numberOfRooms
-#     i = len(table)-1
-#     listOfRooms = [x[1] for x in table]
-#     if(len(table) <= 0):
-#         return table
-#     if(table[i][1] > numberOfRooms):
-#         while(i != 0):
-#             j = start
-#             courseCode, roomNumber = table[i]
-#             # print((courseCode, roomNumber))
-#             if(roomNumber > numberOfRooms):
-#                 while(j != i):
-#                     if j not in listOfRooms:
-#                         table.remove([courseCode, roomNumber])
-#                         table.append([courseCode, j])
-#                         break
-#                     j+=1
-#             else:
-#                 break
-#             i-=1
-#     table.sort(key=lambda s: s[1])
-#     return table
-
-# def insertForPartialValues(partialRooms, table, i):
-#     sum = 0
-#     partialCourseList = []
-#     for courseCode, capacity in partialRooms:
-#         partialCourseList.append((courseCode, capacity))
-#         sum+=capacity
-#         if((sum > 1)): # For Multiple Class Rooms
-#             # partialCourseList.sort(key=lambda s: s[1])
-#             i+=1
-#             for courseCode2, capacity2 in partialCourseList:
-#                 table.append([courseCode2, i+1])
-#             partialCourseList = []
-#             i+=1
-#             table.append([courseCode, i+1])
-#             sum = 0
-#         elif((sum >=0.9) and (sum) <= 1): # For just a single classroom
-#             sum = 0
-#             i+=1
-#             for courseCode2, capacity2 in partialCourseList:
-#                 table.append([courseCode2, i+1])
-#             partialCourseList= []
-#     return partialRooms, table, i
-
-
 def assignRoomTeacherAndTimeForAShift(result):
-    global studentsLimit, examSchedule
-    table = []
+    global studentsLimit, examSchedule, numberOfRooms
+    table, reserveExamList = [], []
     time, date = returnTimeAndDate()
     teachers = returnTeachersForAShift(determineShift(time))
-    fullRooms = convertStudentsToRooms(result)
+    table = convertStudentsToRooms(result)
+    temporaryList =0
     # partialRooms, fullRooms = convertEnrolledStudentsToRooms(result)
     # partialRooms.sort(key=lambda s: s[1])
-    fullRooms.sort(key=lambda s: s[1])
-    print(fullRooms)
-    # print(teachers)
-    i = 0
-    # For Full Rooms
-    # fullRooms, table, i = insertForFullValues(fullRooms, table, i)
-    # For Half or less capacity rooms
-    # partialRooms, table, i = insertForPartialValues(partialRooms, table, i)
-    # print("Fully Filled Rooms: " + str(fullRooms))
-    # print("Partial Filled Rooms: " + str(partialRooms))
-    # print("Resultant Table: "+ str(table))
-    # table = readjustRoomNumbersOfTable(table, len(fullRooms))
-    # print(teachers)
-    # if(len(table) <= 0):
-    #     return
-    # for exam in table:
-    #     # print(exam[1])
-    #     exam.append(teachers[(exam[1]-1)])
-    #     exam.append(time)
-    #     exam.append(date)
-    # if(determineShift(time) == 1):
-    #     importRandomTeachersForADay() # This imports new teachers for a day
-    # examSchedule.append(table)
-    # print("Resultant Table: "+ str(table))
+    if(len(table) <= 0):
+        return 
+    for exam in table:
+        # print(exam)
+        if((exam[1]) >= numberOfRooms):
+            # print(exam)
+            newRoomNumber = exam[1] - numberOfRooms
+            reserveExamList.append([exam[0], newRoomNumber])
+            table.remove(exam)
+        else:
+            teacher = teachers[(exam[1]-1)]
+            exam.append(teacher)
+            exam.append(time)
+            exam.append(date)
+    # print(table)
+    temporaryList = (list(filter(lambda tup : len(tup) == 2, table)))
+    # print(temporaryList)
+    table = list(filter(lambda tup : len(tup) != 2, table))
+    # print(table)
+    if(len(temporaryList) > 0):
+        for exam in temporaryList:
+            newRoomNumber = exam[1] - numberOfRooms
+            reserveExamList.append([exam[0], newRoomNumber])
 
-def removeExamFromResult(result):
-    global reserveExamList
-    reservedExam = result[0]
-    reserveExamList.append(reservedExam)
-    result.remove(reservedExam)
-    return result
+    examSchedule.append(table)
+    if(len(reserveExamList) > 0):
+        time, date = returnTimeAndDate()
+        for exam in reserveExamList:
+            if(len(exam) > 0):
+                # print(exam)
+                exam.append(teachers[(exam[1]-1)])
+                exam.append(time)
+                exam.append(date)
+        examSchedule.append(reserveExamList)
+    if(determineShift(time) == 1):
+        importRandomTeachersForADay() # This imports new teachers for a day
 
 def removeDuplicates(myList):
     return list(dict.fromkeys(myList))
 
-def createCombination(exam, remainingExamsList):
+def createCombination(remainingExamsList):
     global studentsLimit
     result = []
-    totalSum = exam[1]
-    result.append(exam)
+    totalSum = 0
     random.shuffle(remainingExamsList)
     for exam in remainingExamsList:
-        if( (totalSum+exam[1]) <= studentsLimit):
+        if(totalSum <= studentsLimit):
             totalSum += exam[1]
             result.append(exam)
             remainingExamsList.remove(exam)
-    result = removeExamFromResult(result)
     assignRoomTeacherAndTimeForAShift(result)
     return remainingExamsList
 
-def computeSchedule():
-    global examSchedule, reserveExamList
-    # global table
-    importRandomTeachersForADay()
-    exam, remainingExamsList = randomlyPickExamAndReturnListOfExams(convertDictionaryToList(countCourseRegisteredStudents))
-    remainingExamsList = createCombination(exam, remainingExamsList)
-    print(examSchedule)
-    # print(table)
-    # while(len(remainingExamsList) > 0):
-    #     remainingExamsList = createCombination(exam, remainingExamsList)
-    # reserveExamList = removeDuplicates(reserveExamList)
-    # print(reserveExamList)
-    # # while(len(reserveExamList) > 0):
-    # reserveExamList = createCombination(exam, reserveExamList)
-    # print(reserveExamList)
+def testExamSchedule():
+    global examSchedule
+    testDict = {}
+    for schedule in examSchedule:
+        for exam in schedule:
+            # print(exam)
+            courseCode = exam[0]
+            if courseCode not in testDict:
+                testDict[courseCode] = 1
+            else:
+                testDict[courseCode] +=1
+    print(testDict)
 
-    # print(examSchedule)
-    # print("Resultant Table"+ str(table))
+def computeSchedule():
+    global examSchedule, reserveExamList, countCourseRegisteredStudents
+    # global table
+    # print(countCourseRegisteredStudents)
+    importRandomTeachersForADay()
+    remainingExamsList = convertDictionaryToList(countCourseRegisteredStudents)
+    remainingExamsList = createCombination(remainingExamsList)
+    while(len(remainingExamsList) > 0):
+        remainingExamsList = createCombination(remainingExamsList)
+    print(examSchedule)
     
 
 importFiles()
