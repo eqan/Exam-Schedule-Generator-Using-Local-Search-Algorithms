@@ -5,6 +5,7 @@ import csv
 import random
 import math
 import time
+from copy import deepcopy
 
 # Variables to store imported data
 courses, rooms, studentCourses, studentNames, teachers = [], [], [], [], []
@@ -13,7 +14,7 @@ studentEnrolledCourses, courseEnrolledStudents = {}, {}
 # count the total registered students of each course
 countCourseRegisteredStudents = {}
 # Count the total students that have MG course over a CS course in a day and vice versa
-countStudentHavingMGCourseBeforeCSCourse, countStudentHavingCSCourseBeforeMGCourse = 0, 0
+# countStudentHavingMGCourseBeforeCSCourse, countStudentHavingCSCourseBeforeMGCourse = 0, 0
 # Count students limit and number of rooms
 studentsLimit, numberOfRooms  = 0, 0
 # Store the current shift and day for a course
@@ -23,9 +24,30 @@ availableTeachers = []
 # Store the resultant exam schedule
 examSchedule = []
 
+listOfHardConstraints = [
+'• An exam will be scheduled for each course.',
+'• A student is enrolled in at least 3 courses. A student cannot give more than 1 exam \
+at a time.',
+'• Exam will not be held on weekends.',
+'• Each exam must be held between 9 am and 5 pm',
+'• Each exam must be invigilated by a teacher. A teacher cannot invigilate two \
+exams at the same time.',
+'• A teacher cannot invigilate two exams in a row.'
+]
+
+listOfSoftConstraints = [
+'• All students and teachers shall be given a break on Friday from 1-2.',
+'• A student shall not give more than 1 exam consecutively.',
+'• If a student is enrolled in a MG course and a CS course, it is preferred that \
+their MG course exam be held before their CS course exam.',
+'• Two hours of break in the week such that at least half the faculty is free in \
+one slot and the rest of the faculty is free in the other slot so the faculty \
+meetings shall be held in parts as they are now.'
+]
+
 # File directory variables
-fileDir = './test_dataset/'
-# fileDir = './actual_dataset/'
+# fileDir = './test_dataset/'
+fileDir = './actual_dataset/'
 
 # Import files function to imporat all the data from files to variables
 def importFiles():
@@ -250,54 +272,89 @@ check_consecutive_exams(result):
 
 '''
 def checkConsecutiveExams():
-
     return 1
+
+def swapDateAndTime(examToBeDiscarded, examToBeAssignedNewValue):
+    exam1Time = examToBeDiscarded[2]
+    exam1Date = examToBeDiscarded[3]
+    exam2Time = examToBeAssignedNewValue[2]
+    exam2Date = examToBeAssignedNewValue[3]
+    examToBeAssignedNewValue[2] = exam1Time
+    examToBeAssignedNewValue[3] = exam1Date
+    return examToBeAssignedNewValue
+
+def swapMGExamsWithCSExams(mgExamsInFirstSlot, csExamsInSecondSlot):
+    global examSchedule
+    if(len(mgExamsInFirstSlot) <= 0 or len(csExamsInSecondSlot) <= 0):
+        return examSchedule
+    localCopyOfExamSchedule = deepcopy(examSchedule)
+    localCopyOfMgExams = deepcopy(mgExamsInFirstSlot)
+    localCopyOfCsExams = deepcopy(csExamsInSecondSlot)
+    i = 0
+    for schedule in localCopyOfExamSchedule:
+        for exam in schedule:
+            if(i == 0):
+                for mgExam in mgExamsInFirstSlot:
+                    if(mgExam == exam):
+                        schedule.remove(exam)
+                        csExam = localCopyOfCsExams.pop()
+                        schedule.append(swapDateAndTime(csExam, mgExam))
+                i+=1
+            else:
+                for csExam in csExamsInSecondSlot:
+                    if(csExam == exam):
+                        schedule.remove(exam)
+                        mgExam = localCopyOfMgExams.pop()
+                        schedule.append(swapDateAndTime(mgExam, csExam))
+                i=0
+    print(localCopyOfExamSchedule)
 
 ''' 
 Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
  exam be held before their CS course exam
 '''
-# A function that computes the ration of students having CS exams over MG
-def computeCSAndMGCourseAlignmentForADayRatio():
-    global countStudentHavingCSCourseBeforeMGCourse, countStudentHavingMGCourseBeforeCSCourse, examSchedule
+# A function that returns a schedule priortising exams of cs over mg
+def priortizeCSCourseOverMGCourse():
+    global examSchedule
+    mgExamsInFirstSlot = []
+    csExamsInSecondSlot = []
     for student, coursesList in studentEnrolledCourses.items():
-        checkCSCourseInFirstSlot = False
+        # checkCSCourseInFirstSlot = False
         checkMGCourseInFirstSlot = False
         for course in coursesList:
             i = 0
             for schedule in examSchedule:
-                # print(schedule)
                 for exam in schedule:
-                    # print(exam)
                     if(i == 0):
                         if(course == exam[0]): # First check exams of the student in first slot
-                            # print(course)
-                            if("CS" in course):
-                                # print(1)
-                                checkCSCourseInFirstSlot = True
-                            elif("MG" in course):
+                            # if("CS" in course):
+                            #     checkCSCourseInFirstSlot = True
+                            if("MG" in course):
+                                if(exam not in mgExamsInFirstSlot):
+                                    mgExamsInFirstSlot.append(exam)
                                 checkMGCourseInFirstSlot = True
                     else:
                         if(course == exam[0]): # Then check exams of the student in 2nd slot
-                            print(checkCSCourseInFirstSlot)
-                            print(checkMGCourseInFirstSlot)
                             if("CS" in course and checkMGCourseInFirstSlot):
-                                countStudentHavingMGCourseBeforeCSCourse+=1
-                            elif("MG" in course and checkCSCourseInFirstSlot):
-                                countStudentHavingCSCourseBeforeMGCourse+=1
-                            checkCSCourseInFirstSlot = False
+                                if(exam not in csExamsInSecondSlot):
+                                    csExamsInSecondSlot.append(exam)
+                                # countStudentHavingMGCourseBeforeCSCourse+=1
+                            # elif("MG" in course and checkCSCourseInFirstSlot):
+                            #     countStudentHavingCSCourseBeforeMGCourse+=1
+                            # checkCSCourseInFirstSlot = False
                             checkMGCourseInFirstSlot = False
                 if(i == 0):
                     i+=1
                 else:
                     i=0
-    print(countStudentHavingCSCourseBeforeMGCourse)
-    print(countStudentHavingMGCourseBeforeCSCourse)
-
-def priortizeCSCourseOverMGCourse():
-    computeCSAndMGCourseAlignmentForADayRatio()
+    # csExamsInSecondSlot = removeDuplicates(csExamsInSecondSlot)
+    # print(mgExamsInFirstSlot)
+    # print('\n')
+    # print(csExamsInSecondSlot)
+    # print(countStudentHavingCSCourseBeforeMGCourse)
+    # print(countStudentHavingMGCourseBeforeCSCourse)
     # print(studentEnrolledCourses)
-    return 1
+    return csExamsInSecondSlot, mgExamsInFirstSlot
 
 # Compute the schedule
 def computeSchedule():
@@ -310,4 +367,9 @@ def computeSchedule():
     
 initializeVariables()
 computeSchedule()
-priortizeCSCourseOverMGCourse()
+csExamsInSecondSlot, mgExamsInFirstSlot = priortizeCSCourseOverMGCourse()
+swapMGExamsWithCSExams(mgExamsInFirstSlot, csExamsInSecondSlot)
+print('\n')
+csExamsInSecondSlot, mgExamsInFirstSlot = priortizeCSCourseOverMGCourse()
+print(csExamsInSecondSlot)
+print(mgExamsInFirstSlot)
