@@ -252,40 +252,55 @@ def testExamSchedule():
                 testDict[courseCode] +=1
     print(testDict)
 
+'''
+Already Fulfilled soft constraint
+Soft Constraint #1: All students and teachers shall be given a break on Friday from 1-2.
+Soft Constraint #4: Two hours of break in the week such that at least half the faculty is free in 
+one slot and the rest of the faculty is free in the other slot so the faculty 
+meetings shall be held in parts as they are now.
+'''
+
 ''' 
 Soft Constraint #2: A student shall not give more than 1 exam consecutively.
-Day 1  = Prob Pak
-
-Day 13 no consecutive
-Comm LA
-
-Prob Comm
-La Pak
-
-check_consecutive_exams(result):
-	if(threat(result)  == 0)
-		return result
-	day1 = Konsa din consecutive exams
-	day2 = No consecutive exams
-	result  = swap(1 Course of day1, 1 course of day2)
-	check_consecutive_exams(result)
-
 '''
 def checkConsecutiveExams():
-
-    return 1
-
+    global examSchedule, studentEnrolledCourses
+    consecutiveExams = []
+    # print(studentEnrolledCourses)
+    for student, coursesList in studentEnrolledCourses.items():
+        examOccured = False
+        for course in coursesList:
+            i = 0
+            for schedule in examSchedule:
+                for exam in schedule:
+                    if(i == 0):
+                        if(exam[0] == course):
+                            examOccured = True
+                        i+=1
+                    else:
+                        if(exam[0] == course and examOccured):
+                            if exam not in consecutiveExams:
+                                consecutiveExams.append(exam)
+                            i=0
+                            break
+    print(consecutiveExams)
+''' 
+Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
+ exam be held before their CS course exam
+'''
+# A function to swap date and time
 def swapDateAndTime(examToBeDiscarded, examToBeAssignedNewValue):
-    print("Value Earlier:" + str(examToBeAssignedNewValue))
+    # print("Value Earlier:" + str(examToBeAssignedNewValue))
     exam1Time = examToBeDiscarded[3]
     exam1Date = examToBeDiscarded[4]
     exam2Time = examToBeAssignedNewValue[3]
     exam2Date = examToBeAssignedNewValue[4]
     examToBeAssignedNewValue[3] = exam1Time
     examToBeAssignedNewValue[4] = exam1Date
-    print("Value After:" + str(examToBeAssignedNewValue))
+    # print("Value After:" + str(examToBeAssignedNewValue))
     return examToBeAssignedNewValue
 
+# A function that swaps MG exams with cs exams
 def swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot):
     global examSchedule
     if(len(csExamsInFirstSlot) <= 0 or len(mgExamsInSecondSlot) <= 0):
@@ -314,10 +329,6 @@ def swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot):
                 i=0
     return localCopyOfExamSchedule
 
-''' 
-Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
- exam be held before their CS course exam
-'''
 # A function that returns a schedule priortising exams of mg over cs
 def priortizeCSCourseOverMGCourse():
     global examSchedule, studentEnrolledCourses
@@ -359,4 +370,5 @@ def computeSchedule():
     
 initializeVariables()
 computeSchedule()
-print(priortizeCSCourseOverMGCourse())
+# print(priortizeCSCourseOverMGCourse())
+checkConsecutiveExams()
