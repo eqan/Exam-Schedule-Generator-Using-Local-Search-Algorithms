@@ -275,14 +275,14 @@ def checkConsecutiveExams():
     return 1
 
 def swapDateAndTime(examToBeDiscarded, examToBeAssignedNewValue):
-    # print("Value Earlier:" + str(examToBeAssignedNewValue))
+    print("Value Earlier:" + str(examToBeAssignedNewValue))
     exam1Time = examToBeDiscarded[3]
     exam1Date = examToBeDiscarded[4]
     exam2Time = examToBeAssignedNewValue[3]
     exam2Date = examToBeAssignedNewValue[4]
     examToBeAssignedNewValue[3] = exam1Time
     examToBeAssignedNewValue[4] = exam1Date
-    # print("Value After:" + str(examToBeAssignedNewValue))
+    print("Value After:" + str(examToBeAssignedNewValue))
     return examToBeAssignedNewValue
 
 def swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot):
@@ -306,7 +306,7 @@ def swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot):
             else:
                 for mgExam in mgExamsInSecondSlot:
                     if(mgExam == exam):
-                        if(len(csExamsInFirstSlot) > 0):
+                        if(len(localCopyOfCsExams) > 0):
                             schedule.remove(exam)
                             csExam = localCopyOfCsExams.pop()
                             schedule.append(swapDateAndTime(csExam, mgExam))
