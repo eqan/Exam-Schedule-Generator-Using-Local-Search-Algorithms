@@ -6,24 +6,74 @@ import random
 import math
 import time
 
+# Variables to store imported data
 courses, rooms, studentCourses, studentNames, teachers = [], [], [], [], []
+# Variables to store student enrolled in courses and vice versa
+studentEnrolledCourses, courseEnrolledStudents = {}, {}
+# count the total registered students of each course
 countCourseRegisteredStudents = {}
+# Count the total students that have MG course over a CS course in a day and vice versa
+countStudentHavingMGCourseBeforeCSCourse, countStudentHavingCSCourseBeforeMGCourse = 0, 0
+# Count students limit and number of rooms
 studentsLimit, numberOfRooms  = 0, 0
+# Store the current shift and day for a course
 currentDate = {'shift': 0, 'day': 0} #Hour Shift , Day 
+# Store the available teachers for a day
 availableTeachers = []
-reserveExamList = []
+# Store the resultant exam schedule
 examSchedule = []
 
-fileDir = './actual_dataset/'
+# File directory variables
+fileDir = './test_dataset/'
+# fileDir = './actual_dataset/'
 
+# Import files function to imporat all the data from files to variables
 def importFiles():
-    global courses, rooms, studentCourses, studentNames, teachers
+    global courses, rooms, studentCourses, studentNames, teachers, studentCourses, coursesStudents
     courses = pd.read_csv(fileDir + 'courses.csv')
     rooms = pd.read_csv(fileDir + 'rooms.csv')
     studentCourses = pd.read_csv(fileDir +'studentCourses.csv')
     studentNames = pd.read_csv(fileDir +'studentNames.csv')
     teachers = pd.read_csv(fileDir +'teachers.csv')
 
+# Group students according to courses
+def groupstudents():
+    global courseEnrolledStudents
+    td = list(studentCourses['Course Code'])
+    tid = list(studentCourses['Student Name'])
+    for i in td:
+        courseEnrolledStudents[i] = []
+    for i in td:
+        n = studentCourses['Student Name'].where(studentCourses['Course Code'] == i)
+        td = list(n.dropna())
+        courseEnrolledStudents[i] = td
+
+# Group courses according to students
+def groupcourses():
+    global studentEnrolledCourses
+    td = list(studentCourses['Course Code'])
+    tid = list(studentCourses['Student Name'])
+    studentEnrolledCourses = {}
+    for i in tid:
+        studentEnrolledCourses[i] = []
+        n = studentCourses['Course Code'].where(studentCourses['Student Name'] == i)
+        tx = list(n.dropna())
+        studentEnrolledCourses[i] = tx
+    for i in studentEnrolledCourses:
+        if len(studentEnrolledCourses[i]) < 3:
+            studentEnrolledCourses.pop(i)
+
+
+def initializeVariables():
+    global rooms, numberOfRooms
+    importFiles()
+    groupstudents()
+    groupcourses()
+    numberOfRooms = len(rooms.index)
+    countStudentsInCourse()
+    calculateStudentsLimitInRooms()
+
+# Count students enrolled in a course
 def countStudentsInCourse():
     global studentCourses, courses, countCourseRegisteredStudents
     for i, j, studentNameSC, courseCodeSC in studentCourses.itertuples():
@@ -34,36 +84,30 @@ def countStudentsInCourse():
                 else:
                     countCourseRegisteredStudents[courseCodeC] +=1
 
+# Import random teachers for a day
 def importRandomTeachersForADay():
     global teachers, numberOfRooms, availableTeachers
     availableTeachers = teachers['Teacher Name'].tolist()
     random.shuffle(availableTeachers)
     availableTeachers = availableTeachers[:numberOfRooms*2]
 
+# Calculate the students limit in a room
 def calculateStudentsLimitInRooms():
     global studentsLimit
     for i, roomNumber, capacity in rooms.itertuples():
         studentsLimit += int(capacity)
 
-def setVariables():
-    global rooms, numberOfRooms
-    numberOfRooms = len(rooms.index)
-    countStudentsInCourse()
-    calculateStudentsLimitInRooms()
-
+# Convert a dictionary to a list
 def convertDictionaryToList(input):
     return list(input.items())
 
-def randomlyPickExamAndReturnListOfExams(entry_list):
-    exam = random.choice(entry_list)
-    entry_list.remove(exam)
-    return exam, entry_list
-
+# Return Shift of the day according to time
 def determineShift(time):
     if(time == 9):
         return 0
     return 1
 
+# Return time and date and update for the next day and shift
 def returnTimeAndDate():
     global currentDate
     assignTimeStamp = 0
@@ -77,6 +121,7 @@ def returnTimeAndDate():
         currentDate['day'] += 1
     return assignTimeStamp, assignDate
 
+# Return teachers for a shift
 def returnTeachersForAShift(shift):
     global availableTeachers, numberOfRooms
     fullDayCapacity = numberOfRooms
@@ -84,12 +129,13 @@ def returnTeachersForAShift(shift):
         return availableTeachers[:fullDayCapacity]
     return availableTeachers[fullDayCapacity:]
 
+# Return room capacity
 def returnRoomCapacityOfARoom():
     global rooms
     return rooms.iloc[0]['Capacity']
 
+# Convert the number of students to number of rooms
 def convertStudentsToRooms(result):
-    global reserveExamList
     fullRooms = []
     totalCapcityOfARoom = returnRoomCapacityOfARoom()
     i= 0
@@ -106,6 +152,7 @@ def convertStudentsToRooms(result):
             i+=1
     return fullRooms
 
+# Assign a room, teacher and time for a shift
 def assignRoomTeacherAndTimeForAShift(result):
     global studentsLimit, examSchedule, numberOfRooms
     table, reserveExamList = [], []
@@ -113,7 +160,6 @@ def assignRoomTeacherAndTimeForAShift(result):
     teachers = returnTeachersForAShift(determineShift(time))
     table = convertStudentsToRooms(result)
     temporaryList =0
-    # partialRooms, fullRooms = convertEnrolledStudentsToRooms(result)
     # partialRooms.sort(key=lambda s: s[1])
     if(len(table) <= 0):
         return 
@@ -152,9 +198,11 @@ def assignRoomTeacherAndTimeForAShift(result):
     if(determineShift(time) == 1):
         importRandomTeachersForADay() # This imports new teachers for a day
 
+# Remove duplicates from a dictionary
 def removeDuplicates(myList):
     return list(dict.fromkeys(myList))
 
+# Create a combination for shift
 def createCombination(remainingExamsList):
     global studentsLimit
     result = []
@@ -168,6 +216,7 @@ def createCombination(remainingExamsList):
     assignRoomTeacherAndTimeForAShift(result)
     return remainingExamsList
 
+# Just for testing the exam schedule
 def testExamSchedule():
     global examSchedule
     testDict = {}
@@ -181,18 +230,84 @@ def testExamSchedule():
                 testDict[courseCode] +=1
     print(testDict)
 
+''' 
+Soft Constraint #2: A student shall not give more than 1 exam consecutively.
+Day 1  = Prob Pak
+
+Day 13 no consecutive
+Comm LA
+
+Prob Comm
+La Pak
+
+check_consecutive_exams(result):
+	if(threat(result)  == 0)
+		return result
+	day1 = Konsa din consecutive exams
+	day2 = No consecutive exams
+	result  = swap(1 Course of day1, 1 course of day2)
+	check_consecutive_exams(result)
+
+'''
+def checkConsecutiveExams():
+
+    return 1
+
+''' 
+Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
+ exam be held before their CS course exam
+'''
+# A function that computes the ration of students having CS exams over MG
+def computeCSAndMGCourseAlignmentForADayRatio():
+    global countStudentHavingCSCourseBeforeMGCourse, countStudentHavingMGCourseBeforeCSCourse, examSchedule
+    for student, coursesList in studentEnrolledCourses.items():
+        checkCSCourseInFirstSlot = False
+        checkMGCourseInFirstSlot = False
+        for course in coursesList:
+            i = 0
+            for schedule in examSchedule:
+                # print(schedule)
+                for exam in schedule:
+                    # print(exam)
+                    if(i == 0):
+                        if(course == exam[0]): # First check exams of the student in first slot
+                            # print(course)
+                            if("CS" in course):
+                                # print(1)
+                                checkCSCourseInFirstSlot = True
+                            elif("MG" in course):
+                                checkMGCourseInFirstSlot = True
+                    else:
+                        if(course == exam[0]): # Then check exams of the student in 2nd slot
+                            print(checkCSCourseInFirstSlot)
+                            print(checkMGCourseInFirstSlot)
+                            if("CS" in course and checkMGCourseInFirstSlot):
+                                countStudentHavingMGCourseBeforeCSCourse+=1
+                            elif("MG" in course and checkCSCourseInFirstSlot):
+                                countStudentHavingCSCourseBeforeMGCourse+=1
+                            checkCSCourseInFirstSlot = False
+                            checkMGCourseInFirstSlot = False
+                if(i == 0):
+                    i+=1
+                else:
+                    i=0
+    print(countStudentHavingCSCourseBeforeMGCourse)
+    print(countStudentHavingMGCourseBeforeCSCourse)
+
+def priortizeCSCourseOverMGCourse():
+    computeCSAndMGCourseAlignmentForADayRatio()
+    # print(studentEnrolledCourses)
+    return 1
+
+# Compute the schedule
 def computeSchedule():
-    global examSchedule, reserveExamList, countCourseRegisteredStudents
-    # global table
-    # print(countCourseRegisteredStudents)
+    global examSchedule, countCourseRegisteredStudents
     importRandomTeachersForADay()
     remainingExamsList = convertDictionaryToList(countCourseRegisteredStudents)
-    remainingExamsList = createCombination(remainingExamsList)
     while(len(remainingExamsList) > 0):
         remainingExamsList = createCombination(remainingExamsList)
-    print(examSchedule)
+    # print(examSchedule)
     
-
-importFiles()
-setVariables()
+initializeVariables()
 computeSchedule()
+priortizeCSCourseOverMGCourse()

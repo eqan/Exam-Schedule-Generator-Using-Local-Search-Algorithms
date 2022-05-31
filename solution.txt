@@ -87,8 +87,6 @@ Comm LA
 Prob Comm
 La Pak
 
-check_consecutive_exams(result)
-
 
 check_consecutive_exams(result):
 	if(threat(result)  == 0)
