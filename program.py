@@ -272,6 +272,7 @@ check_consecutive_exams(result):
 
 '''
 def checkConsecutiveExams():
+
     return 1
 
 def swapDateAndTime(examToBeDiscarded, examToBeAssignedNewValue):
@@ -317,9 +318,9 @@ def swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot):
 Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
  exam be held before their CS course exam
 '''
-# A function that returns a schedule priortising exams of cs over mg
+# A function that returns a schedule priortising exams of mg over cs
 def priortizeCSCourseOverMGCourse():
-    global examSchedule
+    global examSchedule, studentEnrolledCourses
     csExamsInFirstSlot = []
     mgExamsInSecondSlot = []
     for student, coursesList in studentEnrolledCourses.items():
