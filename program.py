@@ -275,39 +275,43 @@ def checkConsecutiveExams():
     return 1
 
 def swapDateAndTime(examToBeDiscarded, examToBeAssignedNewValue):
-    exam1Time = examToBeDiscarded[2]
-    exam1Date = examToBeDiscarded[3]
-    exam2Time = examToBeAssignedNewValue[2]
-    exam2Date = examToBeAssignedNewValue[3]
-    examToBeAssignedNewValue[2] = exam1Time
-    examToBeAssignedNewValue[3] = exam1Date
+    # print("Value Earlier:" + str(examToBeAssignedNewValue))
+    exam1Time = examToBeDiscarded[3]
+    exam1Date = examToBeDiscarded[4]
+    exam2Time = examToBeAssignedNewValue[3]
+    exam2Date = examToBeAssignedNewValue[4]
+    examToBeAssignedNewValue[3] = exam1Time
+    examToBeAssignedNewValue[4] = exam1Date
+    # print("Value After:" + str(examToBeAssignedNewValue))
     return examToBeAssignedNewValue
 
-def swapMGExamsWithCSExams(mgExamsInFirstSlot, csExamsInSecondSlot):
+def swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot):
     global examSchedule
-    if(len(mgExamsInFirstSlot) <= 0 or len(csExamsInSecondSlot) <= 0):
+    if(len(csExamsInFirstSlot) <= 0 or len(mgExamsInSecondSlot) <= 0):
         return examSchedule
     localCopyOfExamSchedule = deepcopy(examSchedule)
-    localCopyOfMgExams = deepcopy(mgExamsInFirstSlot)
-    localCopyOfCsExams = deepcopy(csExamsInSecondSlot)
+    localCopyOfCsExams = deepcopy(csExamsInFirstSlot)
+    localCopyOfMgExams = deepcopy(mgExamsInSecondSlot)
     i = 0
     for schedule in localCopyOfExamSchedule:
         for exam in schedule:
             if(i == 0):
-                for mgExam in mgExamsInFirstSlot:
-                    if(mgExam == exam):
-                        schedule.remove(exam)
-                        csExam = localCopyOfCsExams.pop()
-                        schedule.append(swapDateAndTime(csExam, mgExam))
+                for csExam in csExamsInFirstSlot:
+                    if(csExam == exam):
+                        if(len(localCopyOfMgExams) > 0):
+                            schedule.remove(exam)
+                            mgExam = localCopyOfMgExams.pop()
+                            schedule.append(swapDateAndTime(mgExam, csExam))
                 i+=1
             else:
-                for csExam in csExamsInSecondSlot:
-                    if(csExam == exam):
-                        schedule.remove(exam)
-                        mgExam = localCopyOfMgExams.pop()
-                        schedule.append(swapDateAndTime(mgExam, csExam))
+                for mgExam in mgExamsInSecondSlot:
+                    if(mgExam == exam):
+                        if(len(csExamsInFirstSlot) > 0):
+                            schedule.remove(exam)
+                            csExam = localCopyOfCsExams.pop()
+                            schedule.append(swapDateAndTime(csExam, mgExam))
                 i=0
-    print(localCopyOfExamSchedule)
+    return localCopyOfExamSchedule
 
 ''' 
 Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
@@ -316,45 +320,32 @@ Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it i
 # A function that returns a schedule priortising exams of cs over mg
 def priortizeCSCourseOverMGCourse():
     global examSchedule
-    mgExamsInFirstSlot = []
-    csExamsInSecondSlot = []
+    csExamsInFirstSlot = []
+    mgExamsInSecondSlot = []
     for student, coursesList in studentEnrolledCourses.items():
-        # checkCSCourseInFirstSlot = False
-        checkMGCourseInFirstSlot = False
+        checkCSCourseInFirstSlot = False
         for course in coursesList:
             i = 0
             for schedule in examSchedule:
                 for exam in schedule:
                     if(i == 0):
                         if(course == exam[0]): # First check exams of the student in first slot
-                            # if("CS" in course):
-                            #     checkCSCourseInFirstSlot = True
-                            if("MG" in course):
-                                if(exam not in mgExamsInFirstSlot):
-                                    mgExamsInFirstSlot.append(exam)
-                                checkMGCourseInFirstSlot = True
+                            if("CS" in course):
+                                if(exam not in csExamsInFirstSlot):
+                                    csExamsInFirstSlot.append(exam)
+                                checkCSCourseInFirstSlot = True
                     else:
                         if(course == exam[0]): # Then check exams of the student in 2nd slot
-                            if("CS" in course and checkMGCourseInFirstSlot):
-                                if(exam not in csExamsInSecondSlot):
-                                    csExamsInSecondSlot.append(exam)
-                                # countStudentHavingMGCourseBeforeCSCourse+=1
-                            # elif("MG" in course and checkCSCourseInFirstSlot):
-                            #     countStudentHavingCSCourseBeforeMGCourse+=1
-                            # checkCSCourseInFirstSlot = False
-                            checkMGCourseInFirstSlot = False
+                            if("MG" in course and checkCSCourseInFirstSlot):
+                                if(exam not in mgExamsInSecondSlot):
+                                    mgExamsInSecondSlot.append(exam)
+                            checkCSCourseInFirstSlot = False
                 if(i == 0):
                     i+=1
                 else:
                     i=0
     # csExamsInSecondSlot = removeDuplicates(csExamsInSecondSlot)
-    # print(mgExamsInFirstSlot)
-    # print('\n')
-    # print(csExamsInSecondSlot)
-    # print(countStudentHavingCSCourseBeforeMGCourse)
-    # print(countStudentHavingMGCourseBeforeCSCourse)
-    # print(studentEnrolledCourses)
-    return csExamsInSecondSlot, mgExamsInFirstSlot
+    return(swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot))
 
 # Compute the schedule
 def computeSchedule():
@@ -367,9 +358,4 @@ def computeSchedule():
     
 initializeVariables()
 computeSchedule()
-csExamsInSecondSlot, mgExamsInFirstSlot = priortizeCSCourseOverMGCourse()
-swapMGExamsWithCSExams(mgExamsInFirstSlot, csExamsInSecondSlot)
-print('\n')
-csExamsInSecondSlot, mgExamsInFirstSlot = priortizeCSCourseOverMGCourse()
-print(csExamsInSecondSlot)
-print(mgExamsInFirstSlot)
+print(priortizeCSCourseOverMGCourse())
