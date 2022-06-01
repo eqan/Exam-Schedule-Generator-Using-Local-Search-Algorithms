@@ -1,7 +1,6 @@
 Course Code,Course Name
 CS217,Object Oriented Programming
 EE227,Digital Logic Design
-CS211,Discrete Structures
 SE110,Intro to Software Engineering
 CS118,Programming Fundamentals
 CS219,Database Systems
@@ -9,8 +8,6 @@ CS220,Operating Systems
 CS302,Design & Analysis of Algorithms
 CY2012,Digital Forensics
 CS307,Computer Networks
-CS328,Software Engineering
-EE229,Computer Organization and Assembly Language
 AI2011,Programming for AI
 DS3011,Big Data Analytics
 CS328,Software Engineering

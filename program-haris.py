@@ -1,22 +1,27 @@
 import copy
-import pandas as pd
-import numpy as np
-import os
-import csv
-import random
 import math
-import time
+import os
+import random
+import pandas as pd
 
-courses, rooms, studentCourses, studentNames, teachers = [], [], [], [], []
-countCourseRegisteredStudents = {}
-studentsLimit, numberOfRooms  = 0, 0
-currentDate = {'shift': 0, 'day': 0} #Hour Shift , Day 
-availableTeachers = []
-reserveExamList = []
-examSchedule = []
 
 fileDir = './actual_dataset/'
+courses = {}
+rooms = {}
+studentEnrolledCourses = {}
+indstudentcourses = {}
+teachers = []
+studentnames = []
+days = 14
+coursesstudents = {}
 
+
+class Exam:
+    course = ''
+    room = []
+    teacher = []
+    time = ''
+    date = 0
 
 def clear():
     if os.name == 'nt':
@@ -25,362 +30,249 @@ def clear():
         _ = os.system('clear')
 
 
-def importFiles():
-    global courses, rooms, studentCourses, studentNames, teachers
-    courses = pd.read_csv(fileDir + 'courses.csv')
-    rooms = pd.read_csv(fileDir + 'rooms.csv')
-    studentCourses = pd.read_csv(fileDir +'studentCourses.csv')
-    studentNames = pd.read_csv(fileDir +'studentNames.csv')
-    teachers = pd.read_csv(fileDir +'teachers.csv')
+
+def importdata():
+    global teachers, studentnames
+    read_teachers = pd.read_csv(fileDir + 'teachers.csv')
+    teachers = list(read_teachers.iloc[:, 0])
+    read_students = pd.read_csv(fileDir + 'studentNames.csv')
+    studentnames = list(read_students.iloc[:, 0])
+    read_courses = pd.read_csv(fileDir + 'courses.csv')
+    course_codes = list(read_courses.iloc[:, 0])
+    course_names = list(read_courses.iloc[:, 1])
+    for i in range(len(course_codes)):
+        courses[course_codes[i]] = course_names[i]
+    read_rooms = pd.read_csv(fileDir + 'rooms.csv')
+    room_capacity = list(read_rooms.iloc[:, 1])
+    for i in range(len(room_capacity)):
+        rooms[i] = room_capacity[i]
+    read_studentcourses = pd.read_csv(fileDir + 'studentCourses.csv')
+    studentname = list(read_studentcourses.iloc[:, 1])
+    course_code = list(read_studentcourses.iloc[:, 2])
+    for i in range(len(studentname)):
+        studentEnrolledCourses[i] = (studentname[i], course_code[i])
 
 
-def countStudentsInCourse():
-    global studentCourses, courses, countCourseRegisteredStudents
-    for i, j, studentNameSC, courseCodeSC in studentCourses.itertuples():
-        for i, courseCodeC, courseNameC in courses.itertuples():
-            if(courseCodeC == courseCodeSC):
-                if courseCodeC not in countCourseRegisteredStudents:
-                    countCourseRegisteredStudents[courseCodeC] = 0
-                else:
-                    countCourseRegisteredStudents[courseCodeC] +=1
-
-
-def importRandomTeachersForADay():
-    global teachers, numberOfRooms, availableTeachers
-    availableTeachers = teachers['Teacher Name'].tolist()
-    random.shuffle(availableTeachers)
-    availableTeachers = availableTeachers[:numberOfRooms*2]
-
-
-def calculateStudentsLimitInRooms():
-    global studentsLimit
-    for i, roomNumber, capacity in rooms.itertuples():
-        studentsLimit += int(capacity)
-
-
-def setVariables():
-    global rooms, numberOfRooms
-    numberOfRooms = len(rooms.index)
-    countStudentsInCourse()
-    calculateStudentsLimitInRooms()
-
-
-def convertDictionaryToList(input):
-    return list(input.items())
-
-
-def randomlyPickExamAndReturnListOfExams(entry_list):
-    exam = random.choice(entry_list)
-    entry_list.remove(exam)
-    return exam, entry_list
-
-
-def determineShift(time):
-    if(time == 9):
-        return 0
-    return 1
-
-
-def returnTimeAndDate():
-    global currentDate
-    assignTimeStamp = 0
-    assignDate = currentDate['day']
-    if(currentDate['shift'] == 0):
-        assignTimeStamp = 9
-        currentDate['shift'] = 1
-    else:
-        assignTimeStamp = 2
-        currentDate['shift'] = 0
-        currentDate['day'] += 1
-    return assignTimeStamp, assignDate
-
-
-def returnTeachersForAShift(shift):
-    global availableTeachers, numberOfRooms
-    fullDayCapacity = numberOfRooms
-    if(shift == 0):
-        return availableTeachers[:fullDayCapacity]
-    return availableTeachers[fullDayCapacity:]
-
-
-def returnRoomCapacityOfARoom():
-    global rooms
-    return rooms.iloc[0]['Capacity']
-
-
-def convertStudentsToRooms(result):
-    global reserveExamList
-    fullRooms = []
-    totalCapcityOfARoom = returnRoomCapacityOfARoom()
-    i= 0
-    for courseCode, capacity in result:
-        tempCapacity = capacity/totalCapcityOfARoom
-        floatValue, decimalValue = math.modf(tempCapacity)
-        # print(courseCode, tempCapacity ,decimalValue, floatValue)
-        if(int(decimalValue) != 0):
-            for j in range(int(decimalValue)):
-                fullRooms.append([courseCode, i+j])
-            i+=int(decimalValue)
-        if(floatValue != 0):
-            fullRooms.append([courseCode, i])
-            i+=1
-    return fullRooms
-
-
-def assignRoomTeacherAndTimeForAShift(result):
-    global studentsLimit, examSchedule, numberOfRooms
-    table, reserveExamList = [], []
-    time, date = returnTimeAndDate()
-    teachers = returnTeachersForAShift(determineShift(time))
-    table = convertStudentsToRooms(result)
-    temporaryList =0
-    # partialRooms, fullRooms = convertEnrolledStudentsToRooms(result)
-    # partialRooms.sort(key=lambda s: s[1])
-    if(len(table) <= 0):
-        return 
-    for exam in table:
-        # print(exam)
-        if((exam[1]) >= numberOfRooms):
-            # print(exam)
-            newRoomNumber = exam[1] - numberOfRooms
-            reserveExamList.append([exam[0], newRoomNumber])
-            table.remove(exam)
+def createtable(sol):
+    table = []
+    for i in sol.keys():
+        if len(sol[i].room) > 1:
+            for j in range(len(sol[i].room)):
+                ex = [i, sol[i].room[j], sol[i].teacher[j], sol[i].date, sol[i].time]
+                table.append(ex)
         else:
-            teacher = teachers[(exam[1]-1)]
-            exam.append(teacher)
-            exam.append(time)
-            exam.append(date)
-    # print(table)
-    temporaryList = (list(filter(lambda tup : len(tup) == 2, table)))
-    # print(temporaryList)
-    table = list(filter(lambda tup : len(tup) != 2, table))
-    # print(table)
-    if(len(temporaryList) > 0):
-        for exam in temporaryList:
-            newRoomNumber = exam[1] - numberOfRooms
-            reserveExamList.append([exam[0], newRoomNumber])
-
-    examSchedule.append(table)
-    if(len(reserveExamList) > 0):
-        time, date = returnTimeAndDate()
-        for exam in reserveExamList:
-            if(len(exam) > 0):
-                # print(exam)
-                exam.append(teachers[(exam[1]-1)])
-                exam.append(time)
-                exam.append(date)
-        examSchedule.append(reserveExamList)
-    if(determineShift(time) == 1):
-        importRandomTeachersForADay() # This imports new teachers for a day
+            ex = [i, sol[i].room[0], sol[i].teacher[0], sol[i].date, sol[i].time]
+            table.append(ex)
+    return table
 
 
-def removeDuplicates(myList):
-    return list(dict.fromkeys(myList))
+def assignteacherrooms(exam, roomsno):
+    for i in range(roomsno):
+        random_room_no = random.randint(1, len(rooms.items()))
+        flag = True
+        while flag:
+            for room in exam.room:
+                if room == random_room_no:
+                    random_room_no = random.randint(1, len(rooms.items()))
+                    break
+            flag = False
+        exam.room.append(random_room_no)
+    for i in range(roomsno):
+        random_teacher = random.randint(0, len(teachers) - 1)
+        flag = True
+        while flag:
+            for teacher in exam.teacher:
+                if teacher == teachers[random_teacher]:
+                    random_teacher = random.randint(0, len(teachers) - 1)
+                    break
+            flag = False
+        exam.teacher.append(teachers[random_teacher])
 
 
-def createCombination(remainingExamsList):
-    global studentsLimit
-    result = []
-    totalSum = 0
-    random.shuffle(remainingExamsList)
-    for exam in remainingExamsList:
-        if(totalSum <= studentsLimit):
-            totalSum += exam[1]
-            result.append(exam)
-            remainingExamsList.remove(exam)
-    assignRoomTeacherAndTimeForAShift(result)
-    return remainingExamsList
+def assigncourses():
+    for student in studentnames:
+        indstudentcourses[student] = []
+    for item in range(len(studentEnrolledCourses.items())):
+        indstudentcourses[studentEnrolledCourses[item][0]].append(studentEnrolledCourses[item][1])
+    for student in studentnames:
+        if(len(indstudentcourses[student]) < 3):
+            indstudentcourses.remove(student)
+
+def assignstudentstocourse():
+    global coursesstudents
+    for course in courses.keys():
+        coursesstudents[course] = []
+    for item in range(len(studentEnrolledCourses.items())):
+        coursesstudents[studentEnrolledCourses[item][1]].append(studentEnrolledCourses[item][0])
 
 
-def testExamSchedule():
-    global examSchedule
-    testDict = {}
-    for schedule in examSchedule:
-        for exam in schedule:
-            # print(exam)
-            courseCode = exam[0]
-            if courseCode not in testDict:
-                testDict[courseCode] = 1
-            else:
-                testDict[courseCode] +=1
-    print(testDict)
-
-
-def groupstudents():
-    td = list(studentCourses['Course Code'])
-    tid = list(studentCourses['Student Name'])
-    coursestudents = {}
-    for i in td:
-        coursestudents[i] = []
-    for i in td:
-        n = studentCourses['Student Name'].where(studentCourses['Course Code'] == i)
-        td = list(n.dropna())
-        coursestudents[i] = td
-    return coursestudents
-
-
-def groupcourses():
-    td = list(studentCourses['Course Code'])
-    tid = list(studentCourses['Student Name'])
-    studentcourse = {}
-    for i in tid:
-        studentcourse[i] = []
-        n = studentCourses['Course Code'].where(studentCourses['Student Name'] == i)
-        tx = list(n.dropna())
-        studentcourse[i] = tx
-    for i in studentcourse:
-        if len(studentcourse[i]) < 3:
-            studentcourse.pop(i)
-    return studentcourse
-
-
-def studentcheck(examschedule, studentcourse):
-    templist = copy.deepcopy(examschedule)
-    flag = False
-    x = 0
-    for i in templist:
-        for j in templist:
-            if i[0] != j[0] and i[0] in studentcourse and j[0] in studentcourse:
-                if i[len(i) - 1] == j[len(j) - 1] and i[len(i) - 2] == j[len(j) - 2]:
-                    flag = True
-                    if i in templist and j in templist:
-                        templist.remove(i)
-                        templist.remove(j)
-    return flag
-
-
-def computeSchedule():
-    global examSchedule, reserveExamList, countCourseRegisteredStudents
-    # global table
-    # print(countCourseRegisteredStudents)
-    importRandomTeachersForADay()
-    remainingExamsList = convertDictionaryToList(countCourseRegisteredStudents)
-    remainingExamsList = createCombination(remainingExamsList)
-    while(len(remainingExamsList) > 0):
-        remainingExamsList = createCombination(remainingExamsList)
-
-
-def costfunction(examsch):
-    temp = examsch
-    cost = 0
-    st = groupcourses()
-    key = list(st.keys())
-    for i in key:
-        if studentcheck(temp, st[i]):
-            cost = cost + 1
-    return cost
-
-
-def newsolution(examsch):
-    exams = copy.deepcopy(examsch)
-    timing = []
-    for i in exams:
-        timing.append(i[len(i)-1])
-    mt = max(timing)
-    temp = random.choice(exams)
-    examday = random.randint(0, mt)
-    temp2 = []
-    for i in exams:
-        if i[len(i)-1] == examday and i[1] == temp[1] and i[0] != temp[0]:
-            temp2 = i
-            i = temp
-            i[len(i)-1] = examday
-            temp2[4] = examday+1
-            exams.append(temp2)
-    return exams
-
-
-def normalizesol(examSchedule):
-    randomsol = []
-    for i in range(len(examSchedule)):
-        for j in range(len(examSchedule[i])):
-            randomsol.append(examSchedule[i][j])
-    return randomsol
-
-
-def swapDateAndTime(examToBeDiscarded, examToBeAssignedNewValue):
-    exam1Time = examToBeDiscarded[3]
-    exam1Date = examToBeDiscarded[4]
-    exam2Time = examToBeAssignedNewValue[3]
-    exam2Date = examToBeAssignedNewValue[4]
-    examToBeAssignedNewValue[3] = exam1Time
-    examToBeAssignedNewValue[4] = exam1Date
-    return examToBeAssignedNewValue
-
-
-def swapMGExamsWithCSExams(schedule, csExamsInFirstSlot, mgExamsInSecondSlot):
-    if (len(csExamsInFirstSlot) <= 0 or len(mgExamsInSecondSlot) <= 0):
-        return examSchedule
-    localCopyOfCsExams = copy.deepcopy(csExamsInFirstSlot)
-    localCopyOfMgExams = copy.deepcopy(mgExamsInSecondSlot)
-    i = 0
-    for exam in schedule:
-        if (i == 0):
-            for csExam in csExamsInFirstSlot:
-                if (csExam == exam):
-                    if (len(localCopyOfMgExams) > 0):
-                        schedule.remove(exam)
-                        mgExam = localCopyOfMgExams.pop()
-                        schedule.append(swapDateAndTime(mgExam, csExam))
-            i += 1
+def random_solution():
+    sol = {}
+    for i in courses.keys():
+        exam = Exam()
+        exam.room = []
+        exam.teacher = []
+        roomsno = int(len(coursesstudents[i]) / 28) + 1
+        assignteacherrooms(exam, roomsno)
+        randtime = random.randint(0, 1)
+        if randtime == 0:
+            exam.time = '9 : 00 AM'
         else:
-            for mgExam in mgExamsInSecondSlot:
-                if (mgExam == exam):
-                    if (len(localCopyOfCsExams) > 0):
-                        schedule.remove(exam)
-                        csExam = localCopyOfCsExams.pop()
-                        schedule.append(swapDateAndTime(csExam, mgExam))
-            i = 0
-    return schedule
+            exam.time = '2 : 00 PM'
+        exam.date = random.randint(1, days)
+        sol[i] = exam
+    return sol
 
 
-def priortizeCSCourseOverMGCourse(schedule):
-    csExamsInFirstSlot = []
-    mgExamsInSecondSlot = []
-    for student, coursesList in groupcourses().items():
+
+
+def studentconstraint(sol):
+    date_list = []
+    for student in indstudentcourses.keys():
+        for course in indstudentcourses[student]:
+            date_list.append(sol[course].date)
+        a = set(date_list)
+        if len(a) != len(date_list):
+            return False
+        date_list = []
+    return True
+
+
+def teachersconstraint(sol):
+    exams = {}
+    for i in range(1, days + 1):
+        exams[i] = []
+    for i in sol.keys():
+        for j in sol[i].teacher:
+            exams[sol[i].date].append(j)
+    for i in exams.keys():
+        a = set(exams[i])
+        if len(a) != len(exams[i]):
+            return False
+    return True
+
+
+''' 
+1 Function that returns Soft constraint #2 and Soft Constraint #4
+Soft Constraint #2: A student shall not give more than 1 exam consecutively.
+
+Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
+ exam be held before their CS course exam
+'''
+def returnSoftConstraintTwoAndThree(examSchedule):
+    global studentEnrolledCourses
+    costOfCSCourseOverMGCourse = 0
+    costOfConsecutiveExams = 0
+    for student, coursesList in studentEnrolledCourses.items():
+        examOccured = False
         checkCSCourseInFirstSlot = False
         for course in coursesList:
             i = 0
-            for exam in schedule:
+            for schedule in examSchedule:
+                for exam in schedule:
+                    if(i == 0):
+                        if(course == exam[0]): # First check exams of the student in first slot
+                            examOccured = True
+                            if("CS" in course):
+                                checkCSCourseInFirstSlot = True
+                    else:
+                        if(course == exam[0]): # Then check exams of the student in 2nd slot
+                            if(examOccured):
+                                costOfConsecutiveExams+=1
+                            if("MG" in course and checkCSCourseInFirstSlot):
+                                costOfCSCourseOverMGCourse+=1
+                            checkCSCourseInFirstSlot = False
+                            examOccured = False
                 if(i == 0):
-                    if(course == exam[0]): # First check exams of the student in first slot
-                        if("CS" in course):
-                            if(exam not in csExamsInFirstSlot):
-                                csExamsInFirstSlot.append(exam)
-                            checkCSCourseInFirstSlot = True
+                    i+=1
                 else:
-                    if(course == exam[0]): # Then check exams of the student in 2nd slot
-                        if("MG" in course and checkCSCourseInFirstSlot):
-                            if(exam not in mgExamsInSecondSlot):
-                                mgExamsInSecondSlot.append(exam)
-                        checkCSCourseInFirstSlot = False
-            if(i == 0):
-                i+=1
-            else:
-                i=0
-    # csExamsInSecondSlot = removeDuplicates(csExamsInSecondSlot)
-    return(swapMGExamsWithCSExams(schedule, csExamsInFirstSlot, mgExamsInSecondSlot))
+                    i=0
+    return costOfConsecutiveExams, costOfCSCourseOverMGCourse
+
+
+def costfunction(sol):
+    cost = 0
+    costOfConsecutiveExams, costOfCSCourseOverMGCourse = returnSoftConstraintTwoAndThree(sol)
+    if studentconstraint(sol):
+        cost = cost + 10
+    if teachersconstraint(sol):
+        cost = cost + 10
+    if costOfConsecutiveExams:
+        cost += 5
+    if costOfCSCourseOverMGCourse:
+        cost += 5
+    return cost
+
+
+def getclashes(sol):
+    date_list = []
+    for student in indstudentcourses.keys():
+        for course in indstudentcourses[student]:
+            date_list.append(sol[course].date)
+        a = set(date_list)
+        if len(a) != len(date_list):
+            return student
+        date_list = []
+    return False
+
+
+def neighboringsolution(solution):
+    student = getclashes(solution)
+    if not student:
+        date1 = 0
+        date2 = 0
+        while date1 == date2:
+            index1 = random.randint(0, len(solution.items()) - 1)
+            index2 = random.randint(0, len(solution.items()) - 1)
+            if index1 == index2:
+                continue
+            date1 = list(solution.values())[index1].date
+            date2 = list(solution.values())[index2].date
+            if date1 == date2:
+                continue
+            course1 = list(solution.keys())[index1]
+            course2 = list(solution.keys())[index2]
+            solution[course1].date = date2
+            solution[course2].date = date1
+        return solution
+    while True:
+        random_numbers = random.sample(range(1, days), len(indstudentcourses[student]))
+        a = set(random_numbers)
+        if len(a) != len(random_numbers):
+            continue
+        i = 0
+        for course in indstudentcourses[student]:
+            solution[course].date = random_numbers[i]
+            i = i + 1
+        break
+    return solution
+
+
+def setupdata():
+    importdata()
+    assignstudentstocourse()
+    assigncourses()
 
 
 def simulatedanealing():
-    global examSchedule
-    temp = 100
-    coolingrate = 4
-    computeSchedule()
-    rand = normalizesol(examSchedule)
-    currentsol = copy.deepcopy(rand)
-    bestsol = copy.deepcopy(rand)
+    temp = 1000
+    coolingrate = 1
+    currentsol = random_solution()
+    bestsol = random_solution()
     currentcost = costfunction(currentsol)
     bestcost = currentcost
     while temp > 1:
-        newsol = newsolution(currentsol)
+        load = "*" * (100 - int(temp / 10)) + "_" * int(temp / 10)
+        print("[", load, "]")
+        newsol = copy.deepcopy(neighboringsolution(currentsol))
         newcost = costfunction(newsol)
-        if newcost <= currentcost:
+        print("Current Cost: ", newcost)
+        if newcost > currentcost:
             currentsol = newsol
             currentcost = newcost
-            bestsol = normalizesol(priortizeCSCourseOverMGCourse(newsol))
+            bestsol = copy.deepcopy(newsol)
             bestcost = newcost
-            if newcost == 0:
+            if newcost == 30:
                 break
         else:
             costdiff = newcost - currentcost
@@ -389,28 +281,27 @@ def simulatedanealing():
                 currentcost = newcost
         temp = temp - coolingrate
         clear()
-        load = "*"*(100-temp) + "_"*temp
-        print("[", load, "]")
     clear()
-    return sortsol(bestsol)
+    testFunction(bestsol)
+    # print(bestsol)
+    return createtable(bestsol)
 
 
-def sortsol(solution):
-    sol = copy.deepcopy(solution)
-    for i in range(len(sol)):
+def setday(datalist):
+    day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    dt = copy.deepcopy(datalist)
+    dy = []
+    for i in range(len(dt)):
+        dy.append('')
+    j = dt[0] - 1
+    for i in range(len(dt)):
+        if(j > 4):
+            j = dt[0] - 1
+        dy[i] = day[j]
+        if i != len(dt)-1 and dt[i+1] > dt[i]:
+            j = j+1
+    return dy
 
-        # loop to compare array elements
-        for j in range(0, len(sol) - i - 1):
-
-            # compare two adjacent elements
-            # change > to < to sort in descending order
-            if sol[j][4] > sol[j + 1][4]:
-                # swapping elements if elements
-                # are not in the intended order
-                temp = sol[j]
-                sol[j] = sol[j + 1]
-                sol[j + 1] = temp
-    return sol
 
 
 def createdataframe(bestsol):
@@ -421,12 +312,40 @@ def createdataframe(bestsol):
     for i in range(len(bestsol)):
         for j in range(len(bestsol[0])):
             result[j].append(bestsol[i][j])
-    df = pd.DataFrame(bestsol, columns=["Course Code", "Room Number", "Teacher Name", "Time Slot", "Date"])
-    df.to_csv('Datesheet.csv')
-    return df
+    df = pd.DataFrame(bestsol, columns=["Course Code", "Room Number", "Teacher Name", "Date", "Time Slot"])
+    sdf = df.sort_values(by=['Date', 'Time Slot'], ascending=True)
+    daycol = setday(list(sdf['Date']))
+    # print(daycol)
+    sdf['Day'] = daycol
+    if os.path.exists('Datesheet.csv'):
+        os.remove('Datesheet.csv')
 
+    sdf.to_csv('Datesheet.csv')
+    return sdf
 
-importFiles()
-setVariables()
+# Remove duplicates from a dictionary
+def removeDuplicates(myList):
+    return list(dict.fromkeys(myList))
+
+def testFunction(bestsol):
+    global courses
+    listOfexams = []
+    # for exam in bestsol:
+    #     listOfexams.append(exam)
+    
+    # print(courses)
+    # print('\n' + str(len(courses)) + '\n')
+    # for course in courses:
+    #     print(course)
+    # listOfexams = removeDuplicates(listOfexams)
+    # print('\n' + str(len(listOfexams)) + '\n')
+
+print("Press 1 for Two week Schedule\nPress 2 for 3 Week Schedule\n")
+x = int(input("Enter Option: "))
+if x == 1:
+    days = 10
+else:
+    days = 15
+setupdata()
 print(createdataframe(simulatedanealing()))
-k = input("Press any key to exit")
+x = input("Press any key to exit")

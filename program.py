@@ -304,7 +304,6 @@ def computeSchedule():
     remainingExamsList = convertDictionaryToList(countCourseRegisteredStudents)
     while(len(remainingExamsList) > 0):
         remainingExamsList = createCombination(remainingExamsList)
-    # print(examSchedule)
     
 initializeVariables()
 computeSchedule()
