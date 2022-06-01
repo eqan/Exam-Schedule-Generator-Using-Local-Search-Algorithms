@@ -261,80 +261,18 @@ meetings shall be held in parts as they are now.
 '''
 
 ''' 
+1 Function that returns Soft constraint #2 and Soft Constraint #4
 Soft Constraint #2: A student shall not give more than 1 exam consecutively.
-'''
-def checkConsecutiveExams():
-    global examSchedule, studentEnrolledCourses
-    consecutiveExams = []
-    # print(studentEnrolledCourses)
-    for student, coursesList in studentEnrolledCourses.items():
-        examOccured = False
-        for course in coursesList:
-            i = 0
-            for schedule in examSchedule:
-                for exam in schedule:
-                    if(i == 0):
-                        if(exam[0] == course):
-                            examOccured = True
-                        i+=1
-                    else:
-                        if(exam[0] == course and examOccured):
-                            if exam not in consecutiveExams:
-                                consecutiveExams.append(exam)
-                            i=0
-                            break
-    print(consecutiveExams)
-''' 
+
 Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
  exam be held before their CS course exam
 '''
-# A function to swap date and time
-def swapDateAndTime(examToBeDiscarded, examToBeAssignedNewValue):
-    # print("Value Earlier:" + str(examToBeAssignedNewValue))
-    exam1Time = examToBeDiscarded[3]
-    exam1Date = examToBeDiscarded[4]
-    exam2Time = examToBeAssignedNewValue[3]
-    exam2Date = examToBeAssignedNewValue[4]
-    examToBeAssignedNewValue[3] = exam1Time
-    examToBeAssignedNewValue[4] = exam1Date
-    # print("Value After:" + str(examToBeAssignedNewValue))
-    return examToBeAssignedNewValue
-
-# A function that swaps MG exams with cs exams
-def swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot):
-    global examSchedule
-    if(len(csExamsInFirstSlot) <= 0 or len(mgExamsInSecondSlot) <= 0):
-        return examSchedule
-    localCopyOfExamSchedule = deepcopy(examSchedule)
-    localCopyOfCsExams = deepcopy(csExamsInFirstSlot)
-    localCopyOfMgExams = deepcopy(mgExamsInSecondSlot)
-    i = 0
-    for schedule in localCopyOfExamSchedule:
-        for exam in schedule:
-            if(i == 0):
-                for csExam in csExamsInFirstSlot:
-                    if(csExam == exam):
-                        if(len(localCopyOfMgExams) > 0):
-                            schedule.remove(exam)
-                            mgExam = localCopyOfMgExams.pop()
-                            schedule.append(swapDateAndTime(mgExam, csExam))
-                i+=1
-            else:
-                for mgExam in mgExamsInSecondSlot:
-                    if(mgExam == exam):
-                        if(len(localCopyOfCsExams) > 0):
-                            schedule.remove(exam)
-                            csExam = localCopyOfCsExams.pop()
-                            schedule.append(swapDateAndTime(csExam, mgExam))
-                i=0
-    return localCopyOfExamSchedule
-
-# A function that returns a schedule priortising exams of mg over cs
-def priortizeCSCourseOverMGCourse():
+def returnSoftConstraintTwoAndThree():
     global examSchedule, studentEnrolledCourses
-    csExamsInFirstSlot = []
-    mgExamsInSecondSlot = []
+    costOfCSCourseOverMGCourse = 0
+    costOfConsecutiveExams = 0
     for student, coursesList in studentEnrolledCourses.items():
+        examOccured = False
         checkCSCourseInFirstSlot = False
         for course in coursesList:
             i = 0
@@ -342,22 +280,22 @@ def priortizeCSCourseOverMGCourse():
                 for exam in schedule:
                     if(i == 0):
                         if(course == exam[0]): # First check exams of the student in first slot
+                            examOccured = True
                             if("CS" in course):
-                                if(exam not in csExamsInFirstSlot):
-                                    csExamsInFirstSlot.append(exam)
                                 checkCSCourseInFirstSlot = True
                     else:
                         if(course == exam[0]): # Then check exams of the student in 2nd slot
+                            if(examOccured):
+                                costOfConsecutiveExams+=1
                             if("MG" in course and checkCSCourseInFirstSlot):
-                                if(exam not in mgExamsInSecondSlot):
-                                    mgExamsInSecondSlot.append(exam)
+                                costOfCSCourseOverMGCourse+=1
                             checkCSCourseInFirstSlot = False
+                            examOccured = False
                 if(i == 0):
                     i+=1
                 else:
                     i=0
-    # csExamsInSecondSlot = removeDuplicates(csExamsInSecondSlot)
-    return(swapMGExamsWithCSExams(csExamsInFirstSlot, mgExamsInSecondSlot))
+    return costOfConsecutiveExams, costOfCSCourseOverMGCourse
 
 # Compute the schedule
 def computeSchedule():
@@ -370,5 +308,5 @@ def computeSchedule():
     
 initializeVariables()
 computeSchedule()
-# print(priortizeCSCourseOverMGCourse())
-checkConsecutiveExams()
+# checkConsecutiveExams()
+print(returnSoftConstraintTwoAndThree())

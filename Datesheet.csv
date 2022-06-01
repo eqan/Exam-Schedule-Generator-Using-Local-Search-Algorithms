@@ -1,44 +1,44 @@
 ,Course Code,Room Number,Teacher Name,Time Slot,Date
-0,CS219,0,Muhammad Ammar,9,0
-1,CS217,1,Amjad Hussain,9,0
-2,CS217,2,Rida Akram,9,0
-3,EE229,3,Dr. Sajid Ahmed,9,0
-4,EE229,4,Dr. Imran Babar,9,0
-5,EE229,5,Shoaib Saleem,9,0
-6,EE229,6,Dr. Hashim Yasin,9,0
-7,EE229,7,Asif Ameer,9,0
-8,SE110,8,Dr. Irfan ul Haq,9,0
-9,SS152,9,Munaza Akhtar,9,0
-10,AI2011,0,Muhammad Ammar,2,0
-11,MT224,2,Rida Akram,2,0
-12,AI2011,1,Amjad Hussain,2,0
-13,MT224,3,Dr. Sajid Ahmed,2,0
-14,SS118,0,Saba Naseem,9,1
-15,CS218,1,Zain Iqbal,9,1
-16,CS218,2,Muiz Qadir,9,1
-17,CS302,3,Dr. Irfan ul Haq,9,1
-18,CS118,4,Adeel Ashraf Cheema,9,1
-19,CS220,5,Dr. Affan Rauf,9,1
-20,CS211,6,Amjad Hussain,9,1
-21,CS211,7,Haseeb Arshad,9,1
-22,CS211,8,Saba Ghani,9,1
-23,CS211,9,Faryal Saud ,9,1
-24,CS307,0,Saba Naseem,2,1
-25,CS307,1,Zain Iqbal,2,1
-26,MG220,0,Ghilmana Sarmad,9,2
-27,MG220,1,Saba Aslam,9,2
-28,EE227,2,Dr. Shahzad Sarfraz,9,2
-29,SS113,3,Dr. Hashim Yasin,9,2
-30,SS113,4,Dr. Uzair Iqbal,9,2
-31,MT205,5,Shehroze Khan,9,2
-32,MT205,6,Aisha Bano,9,2
-33,CS328,7,Ramsha Bashir,9,2
-34,CS328,8,Saba Naseem,9,2
-35,CS328,9,Tehreem Aslam,9,2
-36,CS328,0,Ghilmana Sarmad,2,2
-37,SS111,0,Muiz Qadir,9,3
-38,CY2012,1,Rizwan ul Haq,9,3
-39,DS3011,0,Pariwish Touseef,2,3
-40,DS3011,1,Dr. Mushtaq Ahmed,2,3
-41,MG223,0,Zain Iqbal,9,4
-42,MG223,1,Shehroze Khan,9,4
+0,SE110,0,Anmol Bilal,9,0
+1,CS307,1,Dr. Uzair Iqbal,9,0
+2,CS307,2,Rizwan ul Haq,9,0
+3,SS111,3,Usman Ghous ,9,0
+4,CS219,4,Muhammad Yousaf,9,0
+5,CS118,5,Mahrukh,9,0
+6,SS118,6,Shoaib Saleem,9,0
+7,EE227,7,Saba Ghani,9,0
+8,EE229,8,Mughees Ismail,9,0
+9,EE229,9,Dr. Hashim Yasin,9,0
+10,EE229,0,Anmol Bilal,2,0
+11,EE229,2,Rizwan ul Haq,2,0
+12,EE229,1,Dr. Uzair Iqbal,2,0
+13,DS3011,0,Saba Ghani,9,1
+14,DS3011,1,Dr. Sajid Ahmed,9,1
+15,MG220,2,Bushra Niaz,9,1
+16,MG220,3,Mahrukh,9,1
+17,CS328,4,Farah Iqbal,9,1
+18,CS328,5,Ayesha Liaqat,9,1
+19,CS328,6,Shoaib Saleem,9,1
+20,CS328,7,Aisha Bano,9,1
+21,CS220,8,Aqsa Younus ,9,1
+22,MG223,9,Masood Habib,9,1
+23,MG223,0,Saba Ghani,2,1
+24,CS218,2,Bushra Niaz,2,1
+25,SS113,4,Farah Iqbal,2,1
+26,CS218,1,Dr. Sajid Ahmed,2,1
+27,SS113,3,Mahrukh,2,1
+28,CS211,0,Dr. Muhammad Bilal,9,2
+29,CS211,1,Muhammad Noman,9,2
+30,CS211,2,Ghilmana Sarmad,9,2
+31,CS211,3,Aqsa Younus ,9,2
+32,AI2011,4,Umar Naseer,9,2
+33,AI2011,5,Rida Akram,9,2
+34,CY2012,6,Aliza Saeed,9,2
+35,MT224,7,Dr. Shahnawaz Qureshi,9,2
+36,MT224,8,Dr. Muhammad Fayyaz,9,2
+37,CS302,0,Muhammad Iqbal,2,2
+38,CS217,1,Muhammad Yousaf,2,2
+39,CS217,2,Hannan Farooq,2,2
+40,MT205,0,Dr. Muhammad Bilal,9,3
+41,MT205,1,Hannan Farooq,9,3
+42,SS152,0,Mahrukh,2,3
