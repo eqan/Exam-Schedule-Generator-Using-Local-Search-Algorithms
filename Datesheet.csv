@@ -1,44 +1,44 @@
 ,Course Code,Room Number,Teacher Name,Date,Time Slot,Day
-4,SE110,6,Usman Joyia ,1,2 : 00 PM,Monday
-8,CS220,7,Munaza Akhtar,1,2 : 00 PM,Monday
-12,CS307,9,Tehreem Aslam,2,2 : 00 PM,Tuesday
-13,CS307,4,Farah Iqbal,2,2 : 00 PM,Tuesday
-5,CS118,6,Dr. Haris Khurram,2,9 : 00 AM,Tuesday
-6,CS118,7,Hafiz Tayyab,2,9 : 00 AM,Tuesday
-25,CS211,9,Usman Joyia ,3,9 : 00 AM,Wednesday
-26,CS211,10,Mahrukh,3,9 : 00 AM,Wednesday
-27,CS211,2,Faryal Saud ,3,9 : 00 AM,Wednesday
-32,MG220,1,Dr. Bilal Khan,3,9 : 00 AM,Wednesday
-33,MG220,6,Dr. Hashim Yasin,3,9 : 00 AM,Wednesday
-40,SS118,8,Muhammad Iqbal,5,2 : 00 PM,Thursday
-14,AI2011,8,Dr. Uzair Iqbal,5,9 : 00 AM,Thursday
-15,AI2011,4,Aqsa Younus ,5,9 : 00 AM,Thursday
-38,SS152,7,Arfan Shahzad,6,2 : 00 PM,Friday
-39,SS152,4,Pariwish Touseef,6,2 : 00 PM,Friday
-41,MT205,4,Dr. Umar Aftab,6,2 : 00 PM,Friday
-42,MT205,1,Dr. Shahzad Sarfraz,6,2 : 00 PM,Friday
-16,DS3011,8,Mughees Ismail,6,9 : 00 AM,Friday
-17,DS3011,4,Dr. Imran Babar,6,9 : 00 AM,Friday
-34,MG223,2,Muhammad Iqbal,6,9 : 00 AM,Friday
-35,MG223,7,Munaza Akhtar,6,9 : 00 AM,Friday
-0,CS217,10,Mughees Ismail,8,2 : 00 PM,Monday
-1,CS217,2,Dr. Bilal Khan,8,2 : 00 PM,Monday
-36,SS111,4,Dr. Rabia Maqsood,8,2 : 00 PM,Monday
-37,SS111,8,Farah Iqbal,8,2 : 00 PM,Monday
-22,EE229,8,Saba Ghani,8,9 : 00 AM,Monday
-23,EE229,5,Aqsa Younus ,8,9 : 00 AM,Monday
-24,EE229,9,Anmol Bilal,8,9 : 00 AM,Monday
-9,CS302,1,Dr. Irfan ul Haq,9,2 : 00 PM,Tuesday
-10,CS302,8,Sadia Ashfaq,9,2 : 00 PM,Tuesday
-11,CY2012,1,Dr. Affan Rauf,9,2 : 00 PM,Tuesday
-18,CS328,10,Maham Naeem,9,2 : 00 PM,Tuesday
-19,CS328,7,Dr. Rabia Maqsood,9,2 : 00 PM,Tuesday
-30,SS113,1,Sumaira Mustafa,9,2 : 00 PM,Tuesday
-31,SS113,9,Muhammad Noman,9,2 : 00 PM,Tuesday
-2,EE227,7,Adeel Ashraf Cheema,9,9 : 00 AM,Tuesday
-3,EE227,3,Awais Azam,9,9 : 00 AM,Tuesday
-7,CS219,2,Usman Ghous ,9,9 : 00 AM,Tuesday
-20,CS218,1,Hannan Farooq,10,2 : 00 PM,Wednesday
-21,CS218,7,Masood Habib,10,2 : 00 PM,Wednesday
-28,MT224,2,Azeem Iftikhar,10,2 : 00 PM,Wednesday
-29,MT224,8,Muhammad Yousaf,10,2 : 00 PM,Wednesday
+8,CS220,2,Dr. Shahzad Sarfraz,1,2 : 00 PM,Monday
+41,MT205,1,Adeel Ashraf Cheema,2,2 : 00 PM,Tuesday
+42,MT205,10,Hayat Ali,2,2 : 00 PM,Tuesday
+2,EE227,4,Pariwish Touseef,2,9 : 00 AM,Tuesday
+3,EE227,1,Rizwan ul Haq,2,9 : 00 AM,Tuesday
+4,SE110,9,Awais Azam,2,9 : 00 AM,Tuesday
+0,CS217,9,Aisha Bano,3,2 : 00 PM,Wednesday
+1,CS217,3,Dr. Rabia Maqsood,3,2 : 00 PM,Wednesday
+28,MT224,4,Mahrukh,3,2 : 00 PM,Wednesday
+29,MT224,1,Aliza Saeed,3,2 : 00 PM,Wednesday
+30,SS113,8,Sadia Ashfaq,3,2 : 00 PM,Wednesday
+31,SS113,3,Aqsa Younus ,3,2 : 00 PM,Wednesday
+36,SS111,10,Tahir Farooq,3,9 : 00 AM,Wednesday
+37,SS111,3,Dr. Haris Khurram,3,9 : 00 AM,Wednesday
+12,CS307,5,Masood Habib,4,2 : 00 PM,Thursday
+13,CS307,1,Sadia Ashfaq,4,2 : 00 PM,Thursday
+22,EE229,10,Muhammad Iqbal,4,2 : 00 PM,Thursday
+23,EE229,8,Faryal Saud ,4,2 : 00 PM,Thursday
+24,EE229,7,Aliza Saeed,4,2 : 00 PM,Thursday
+34,MG223,3,Dr. Haris Khurram,4,2 : 00 PM,Thursday
+35,MG223,8,Abdul Qadeer,4,2 : 00 PM,Thursday
+9,CS302,10,Sumaira Mustafa,4,9 : 00 AM,Thursday
+10,CS302,7,Ayesha Liaqat,4,9 : 00 AM,Thursday
+7,CS219,1,Ghilmana Sarmad,5,9 : 00 AM,Friday
+40,SS118,7,Sadia Ashfaq,5,9 : 00 AM,Friday
+14,AI2011,7,Aqsa Younus ,6,2 : 00 PM,Monday
+15,AI2011,5,Dr. Shahnawaz Qureshi,6,2 : 00 PM,Monday
+16,DS3011,10,Abdul Qadeer,6,9 : 00 AM,Monday
+17,DS3011,1,Usman Joyia ,6,9 : 00 AM,Monday
+20,CS218,1,Muhammad Yousaf,6,9 : 00 AM,Monday
+21,CS218,9,Muhammad Noman,6,9 : 00 AM,Monday
+25,CS211,2,Dr. Muhammad Bilal,7,2 : 00 PM,Tuesday
+26,CS211,6,Nasreen Akhter,7,2 : 00 PM,Tuesday
+27,CS211,7,Aliza Saeed,7,2 : 00 PM,Tuesday
+5,CS118,2,Dr. Affan Rauf,8,2 : 00 PM,Wednesday
+6,CS118,8,Muhammad Yousaf,8,2 : 00 PM,Wednesday
+32,MG220,3,Haseeb Arshad,8,2 : 00 PM,Wednesday
+33,MG220,10,Muhammad Ammar,8,2 : 00 PM,Wednesday
+11,CY2012,2,Dr. Haris Khurram,9,2 : 00 PM,Thursday
+18,CS328,9,Tehreem Aslam,9,9 : 00 AM,Thursday
+19,CS328,5,Dr. Muhammad Ahmed,9,9 : 00 AM,Thursday
+38,SS152,10,Hannan Farooq,10,9 : 00 AM,Friday
+39,SS152,9,Arfan Shahzad,10,9 : 00 AM,Friday
