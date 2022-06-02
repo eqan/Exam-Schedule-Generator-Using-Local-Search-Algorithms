@@ -16,6 +16,14 @@ studentnames = []
 days = 14
 coursesstudents = {}
 
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk),   end="")
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk),   end="")
+def prYellow(skk): print("\033[93m {}\033[00m" .format(skk),   end="")
+def prLightPurple(skk): print("\033[94m {}\033[00m" .format(skk),   end="")
+def prPurple(skk): print("\033[95m {}\033[00m" .format(skk),   end="")
+def prCyan(skk): print("\033[96m {}\033[00m" .format(skk),   end="")
+def prLightGray(skk): print("\033[97m {}\033[00m" .format(skk),   end="")
+def prBlack(skk): print("\033[98m {}\033[00m" .format(skk),   end="")
 
 listOfHardConstraints = [
 '• An exam will be scheduled for each course.',
@@ -330,10 +338,10 @@ def simulatedanealing():
     bestcost = currentcost
     while temp > 1:
         load = "*" * (100 - int(temp / 10)) + "_" * int(temp / 10)
-        # print("[", load, "]")
+        prGreen("[" + str(load) + "]\n")
         newsol = copy.deepcopy(neighboringsolution(currentsol))
         newcost = costfunction(newsol)
-        # print("Current Cost: ", newcost)
+        prYellow("Current Cost: " + str(newcost) + '\n')
         if newcost > currentcost:
             currentsol = newsol
             currentcost = newcost
@@ -407,10 +415,10 @@ def testFunction(bestsol):
     # listOfexams = removeDuplicates(listOfexams)
     # print('\n' + str(len(listOfexams)) + '\n')
 
-print("Press 1 for Two week Schedule\nPress 2 for 3 Week Schedule\n")
+prPurple("Press 1 for 2 week Schedule\n Press 2 for 3 Week Schedule\n")
 x = int(input("Enter Option: "))
 if x == 1:
-    days = 7
+    days = 10
 else:
     days = 15
 setupdata()

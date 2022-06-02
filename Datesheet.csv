@@ -1,44 +1,44 @@
 ,Course Code,Room Number,Teacher Name,Date,Time Slot,Day
-22,EE229,5,Muhammad Yousaf,1,2,Monday
-23,EE229,2,Ayesha Liaqat,1,2,Monday
-24,EE229,6,Usman Joyia ,1,2,Monday
-34,MG223,7,Munaza Akhtar,1,2,Monday
-35,MG223,9,Aliza Saeed,1,2,Monday
-41,MT205,1,Aqsa Younus ,1,2,Monday
-42,MT205,4,Asif Ameer,1,2,Monday
-0,CS217,2,Dr. Muhammad Ahmed,1,9,Monday
-1,CS217,6,Awais Azam,1,9,Monday
-9,CS302,7,Aisha Bano,1,9,Monday
-10,CS302,3,Rida Akram,1,9,Monday
-28,MT224,1,Haseeb Arshad,1,9,Monday
-29,MT224,8,Dr. Bilal Khan,1,9,Monday
-36,SS111,1,Rizwan ul Haq,2,9,Tuesday
-37,SS111,10,Mahrukh,2,9,Tuesday
-38,SS152,1,Dr. Sajid Ahmed,2,9,Tuesday
-39,SS152,5,Saba Naseem,2,9,Tuesday
-40,SS118,6,Usman Joyia ,2,9,Tuesday
-16,DS3011,10,Dr. Muhammad Bilal,3,2,Wednesday
-17,DS3011,1,Abdul Qadeer,3,2,Wednesday
-5,CS118,6,Ghilmana Sarmad,3,9,Wednesday
-6,CS118,4,Dr. Mushtaq Ahmed,3,9,Wednesday
-32,MG220,9,Dr. Sajid Ahmed,3,9,Wednesday
-33,MG220,2,Dr. Muhammad Ahmed,3,9,Wednesday
-14,AI2011,9,Adeel Ashraf Cheema,4,2,Thursday
-15,AI2011,6,Dr. Muhammad Bilal,4,2,Thursday
-8,CS220,2,Saba Naseem,4,9,Thursday
-12,CS307,2,Dr. Sajid Ahmed,4,9,Thursday
-13,CS307,6,Amjad Hussain,4,9,Thursday
-4,SE110,2,Ayesha Liaqat,5,2,Friday
-20,CS218,7,Saba Aslam,5,2,Friday
-21,CS218,2,Dr. Sajid Ahmed,5,2,Friday
-25,CS211,6,Faryal Saud ,5,9,Friday
-26,CS211,8,Azeem Iftikhar,5,9,Friday
-27,CS211,8,Mahrukh,5,9,Friday
-2,EE227,7,Shehroze Khan,6,2,Monday
-3,EE227,5,Nasreen Akhter,6,2,Monday
-18,CS328,3,Saba Ghani,6,2,Monday
-19,CS328,8,Dr. Shahnawaz Qureshi,6,2,Monday
-7,CS219,7,Dr. Sajid Ahmed,6,9,Monday
-11,CY2012,9,Hayat Ali,6,9,Monday
-30,SS113,6,Rida Akram,6,9,Monday
-31,SS113,10,Azeem Iftikhar,6,9,Monday
+11,CY2012,9,Aqsa Younus ,1,9,Monday
+28,MT224,4,Dr. Muhammad Ahmed,1,9,Monday
+29,MT224,8,Usman Ghous ,1,9,Monday
+5,CS118,9,Dr. Shahzad Sarfraz,3,9,Tuesday
+6,CS118,6,Pariwish Touseef,3,9,Tuesday
+25,CS211,2,Aliza Saeed,3,9,Tuesday
+26,CS211,1,Ayesha Liaqat,3,9,Tuesday
+27,CS211,7,Arfan Shahzad,3,9,Tuesday
+34,MG223,5,Aliza Saeed,3,9,Tuesday
+35,MG223,9,Usman Joyia ,3,9,Tuesday
+38,SS152,7,Amjad Hussain,4,9,Wednesday
+39,SS152,1,Dr. Muhammad Fayyaz,4,9,Wednesday
+0,CS217,5,Ghilmana Sarmad,6,2,Thursday
+1,CS217,2,Dr. Rabia Maqsood,6,2,Thursday
+12,CS307,4,Farah Iqbal,6,2,Thursday
+13,CS307,5,Anmol Bilal,6,2,Thursday
+14,AI2011,8,Sumaira Mustafa,6,2,Thursday
+15,AI2011,9,Aisha Bano,6,2,Thursday
+36,SS111,3,Usman Ghous ,6,9,Thursday
+37,SS111,10,Anmol Bilal,6,9,Thursday
+16,DS3011,1,Dr. Shahnawaz Qureshi,7,2,Friday
+17,DS3011,4,Usman Ghous ,7,2,Friday
+2,EE227,2,Farah Iqbal,7,9,Friday
+3,EE227,8,Anmol Bilal,7,9,Friday
+4,SE110,4,Usman Ghous ,7,9,Friday
+18,CS328,9,Hafiz Tayyab,7,9,Friday
+19,CS328,3,Maham Naeem,7,9,Friday
+22,EE229,9,Muhammad Ammar,8,9,Monday
+23,EE229,3,Mahrukh,8,9,Monday
+24,EE229,5,Saba Naseem,8,9,Monday
+40,SS118,4,Dr. Irfan ul Haq,8,9,Monday
+30,SS113,10,Dr. Shahzad Sarfraz,9,2,Tuesday
+31,SS113,9,Dr. Mushtaq Ahmed,9,2,Tuesday
+32,MG220,6,Muhammad Yousaf,9,2,Tuesday
+33,MG220,5,Dr. Mushtaq Ahmed,9,2,Tuesday
+7,CS219,5,Dr. Shahnawaz Qureshi,10,2,Wednesday
+9,CS302,2,Saba Ghani,10,2,Wednesday
+10,CS302,7,Hayat Ali,10,2,Wednesday
+20,CS218,3,Muhammad Iqbal,10,2,Wednesday
+21,CS218,4,Shoaib Saleem,10,2,Wednesday
+41,MT205,10,Ayesha Liaqat,10,2,Wednesday
+42,MT205,1,Saba Aslam,10,2,Wednesday
+8,CS220,2,Haseeb Arshad,10,9,Wednesday
