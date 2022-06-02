@@ -1,44 +1,18 @@
 ,Course Code,Room Number,Teacher Name,Date,Time Slot,Day
-11,CY2012,9,Aqsa Younus ,1,9,Monday
-28,MT224,4,Dr. Muhammad Ahmed,1,9,Monday
-29,MT224,8,Usman Ghous ,1,9,Monday
-5,CS118,9,Dr. Shahzad Sarfraz,3,9,Tuesday
-6,CS118,6,Pariwish Touseef,3,9,Tuesday
-25,CS211,2,Aliza Saeed,3,9,Tuesday
-26,CS211,1,Ayesha Liaqat,3,9,Tuesday
-27,CS211,7,Arfan Shahzad,3,9,Tuesday
-34,MG223,5,Aliza Saeed,3,9,Tuesday
-35,MG223,9,Usman Joyia ,3,9,Tuesday
-38,SS152,7,Amjad Hussain,4,9,Wednesday
-39,SS152,1,Dr. Muhammad Fayyaz,4,9,Wednesday
-0,CS217,5,Ghilmana Sarmad,6,2,Thursday
-1,CS217,2,Dr. Rabia Maqsood,6,2,Thursday
-12,CS307,4,Farah Iqbal,6,2,Thursday
-13,CS307,5,Anmol Bilal,6,2,Thursday
-14,AI2011,8,Sumaira Mustafa,6,2,Thursday
-15,AI2011,9,Aisha Bano,6,2,Thursday
-36,SS111,3,Usman Ghous ,6,9,Thursday
-37,SS111,10,Anmol Bilal,6,9,Thursday
-16,DS3011,1,Dr. Shahnawaz Qureshi,7,2,Friday
-17,DS3011,4,Usman Ghous ,7,2,Friday
-2,EE227,2,Farah Iqbal,7,9,Friday
-3,EE227,8,Anmol Bilal,7,9,Friday
-4,SE110,4,Usman Ghous ,7,9,Friday
-18,CS328,9,Hafiz Tayyab,7,9,Friday
-19,CS328,3,Maham Naeem,7,9,Friday
-22,EE229,9,Muhammad Ammar,8,9,Monday
-23,EE229,3,Mahrukh,8,9,Monday
-24,EE229,5,Saba Naseem,8,9,Monday
-40,SS118,4,Dr. Irfan ul Haq,8,9,Monday
-30,SS113,10,Dr. Shahzad Sarfraz,9,2,Tuesday
-31,SS113,9,Dr. Mushtaq Ahmed,9,2,Tuesday
-32,MG220,6,Muhammad Yousaf,9,2,Tuesday
-33,MG220,5,Dr. Mushtaq Ahmed,9,2,Tuesday
-7,CS219,5,Dr. Shahnawaz Qureshi,10,2,Wednesday
-9,CS302,2,Saba Ghani,10,2,Wednesday
-10,CS302,7,Hayat Ali,10,2,Wednesday
-20,CS218,3,Muhammad Iqbal,10,2,Wednesday
-21,CS218,4,Shoaib Saleem,10,2,Wednesday
-41,MT205,10,Ayesha Liaqat,10,2,Wednesday
-42,MT205,1,Saba Aslam,10,2,Wednesday
-8,CS220,2,Haseeb Arshad,10,9,Wednesday
+5,CS118,1,Adeel Ashraf Cheema,1,2:00 PM - 5:00 PM,Monday
+6,CS219,9,Saba Aslam,1,2:00 PM - 5:00 PM,Monday
+9,CS302,2,Dr. Shahnawaz Qureshi,2,2:00 PM - 5:00 PM,Tuesday
+1,EE227,4,Anmol Bilal,2,2:00 PM - 5:00 PM,Tuesday
+2,EE227,9,Muhammad Yousaf,2,2:00 PM - 5:00 PM,Tuesday
+15,SS118,3,Dr. Bilal Khan,3,9:00 AM - 12:00 AM,Wednesday
+4,SE110,4,Aliza Saeed,4,9:00 AM - 12:00 AM,Thursday
+14,SS111,5,Asif Ameer,4,9:00 AM - 12:00 AM,Thursday
+0,CS217,8,Dr. Bilal Khan,5,9:00 AM - 12:00 AM,Friday
+11,CS307,3,Dr. Imran Babar,8,9:00 AM - 12:00 AM,Monday
+10,CY2012,7,Shehroze Khan,8,9:00 AM - 12:00 AM,Monday
+7,CS220,1,Nasreen Akhter,9,9:00 AM - 12:00 AM,Tuesday
+8,CS220,2,Dr. Imran Babar,9,9:00 AM - 12:00 AM,Tuesday
+3,CS211,3,Masood Habib,10,9:00 AM - 12:00 AM,Wednesday
+16,MT205,5,Dr. Rabia Maqsood,10,2:00 PM - 5:00 PM,Wednesday
+13,MG223,7,Saba Aslam,11,2:00 PM - 5:00 PM,Thursday
+12,MG220,8,Pariwish Touseef,11,2:00 PM - 5:00 PM,Thursday
