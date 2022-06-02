@@ -138,9 +138,9 @@ def random_solution():
         assignteacherrooms(exam, roomsno)
         randtime = random.randint(0, 1)
         if randtime == 0:
-            exam.time = '9 : 00 AM'
+            exam.time = 9
         else:
-            exam.time = '2 : 00 PM'
+            exam.time = 2
         exam.date = random.randint(1, days)
         sol[i] = exam
     return sol
@@ -181,27 +181,76 @@ Soft Constraint #2: A student shall not give more than 1 exam consecutively.
 Soft Constraint#3: If a student is enrolled in a MG course and a CS course, it is preferred that their MG course
  exam be held before their CS course exam
 '''
+
+def sortsol(solution):
+    sol2 = copy.deepcopy(solution)
+    sol = list(sol2.values())
+    sol3 = list(sol2.keys())
+    for i in range(len(sol)):
+
+        # loop to compare array elements
+        for j in range(0, len(sol) - i - 1):
+
+            # compare two adjacent elements
+            # change > to < to sort in descending order
+            if sol[j].date > sol[j + 1].date:
+                # swapping elements if elements
+                # are not in the intended order
+                temp = sol[j]
+                temp2 = sol3[j]
+                sol[j] = sol[j + 1]
+                sol3[j] = sol3[j+1]
+                sol[j + 1] = temp
+                sol3[j+1] = temp2
+            if sol[j].time < sol[j+1].time and sol[j].date == sol[j+1].date:
+                temp = sol[j]
+                temp2 = sol3[j]
+                sol[j] = sol[j + 1]
+                sol3[j] = sol3[j + 1]
+                sol[j + 1] = temp
+                sol3[j + 1] = temp2
+    j = 0
+    xdict = {}
+    for i in sol3:
+        xdict[i] = []
+    for i in xdict.keys():
+        xdict[i] = sol[j]
+        j += 1
+    return xdict
+
+def print_solution(sol):
+    for i in sol.keys():
+        print(i, " ", sol[i].room, " ", sol[i].teacher, " ", sol[i].date, " ", sol[i].time)
+
 def returnSoftConstraintTwoAndThree(examSchedule):
     global studentEnrolledCourses
+    examSchedule = sortsol(examSchedule)
+    # print_solution(examSchedule)    
+    # exam, schedule = examSchedule.items()
+    # print(schedule)
+    # var = sorted(examSchedule.items(), lambda x,key=lambda y: y.date)
+    # print(var)
     costOfCSCourseOverMGCourse = 0
     costOfConsecutiveExams = 0
     for student, coursesList in studentEnrolledCourses.items():
         examOccured = False
         checkCSCourseInFirstSlot = False
         for course in coursesList:
-            for exam, schedule in examSchedule.items():
-                print(schedule)
-                if(schedule.time == '9 : 00 AM'): # First check exams of the student in first slot
+            for exam in examSchedule.keys():
+                # print(schedule)
+                if(examSchedule[exam].time == 9): # First check exams of the student in first slot
                     if(course == exam):
-                        # print(schedule.time)
                         examOccured = True
                         if("CS" in course):
                             checkCSCourseInFirstSlot = True
                 else:
                     if(course == exam):
+                        # print(examOccured)
                         if(examOccured): # Then check exams of the student in 2nd slot
+                            print(1)
                             costOfConsecutiveExams+=1
                         if("MG" in course and checkCSCourseInFirstSlot):
+                            print(2)
                             costOfCSCourseOverMGCourse+=1
                         checkCSCourseInFirstSlot = False
                         examOccured = False
@@ -361,7 +410,7 @@ def testFunction(bestsol):
 print("Press 1 for Two week Schedule\nPress 2 for 3 Week Schedule\n")
 x = int(input("Enter Option: "))
 if x == 1:
-    days = 10
+    days = 7
 else:
     days = 15
 setupdata()
