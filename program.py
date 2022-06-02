@@ -3,6 +3,7 @@ import math
 import os
 import random
 import pandas as pd
+import time
 
 
 fileDir = './actual_dataset/'
@@ -188,26 +189,22 @@ def returnSoftConstraintTwoAndThree(examSchedule):
         examOccured = False
         checkCSCourseInFirstSlot = False
         for course in coursesList:
-            i = 0
-            for schedule in examSchedule:
-                for exam in schedule:
-                    if(i == 0):
-                        if(course == exam[0]): # First check exams of the student in first slot
-                            examOccured = True
-                            if("CS" in course):
-                                checkCSCourseInFirstSlot = True
-                    else:
-                        if(course == exam[0]): # Then check exams of the student in 2nd slot
-                            if(examOccured):
-                                costOfConsecutiveExams+=1
-                            if("MG" in course and checkCSCourseInFirstSlot):
-                                costOfCSCourseOverMGCourse+=1
-                            checkCSCourseInFirstSlot = False
-                            examOccured = False
-                if(i == 0):
-                    i+=1
+            for exam, schedule in examSchedule.items():
+                print(schedule)
+                if(schedule.time == '9 : 00 AM'): # First check exams of the student in first slot
+                    if(course == exam):
+                        # print(schedule.time)
+                        examOccured = True
+                        if("CS" in course):
+                            checkCSCourseInFirstSlot = True
                 else:
-                    i=0
+                    if(course == exam):
+                        if(examOccured): # Then check exams of the student in 2nd slot
+                            costOfConsecutiveExams+=1
+                        if("MG" in course and checkCSCourseInFirstSlot):
+                            costOfCSCourseOverMGCourse+=1
+                        checkCSCourseInFirstSlot = False
+                        examOccured = False
     return costOfConsecutiveExams, costOfCSCourseOverMGCourse
 
 
@@ -284,10 +281,10 @@ def simulatedanealing():
     bestcost = currentcost
     while temp > 1:
         load = "*" * (100 - int(temp / 10)) + "_" * int(temp / 10)
-        print("[", load, "]")
+        # print("[", load, "]")
         newsol = copy.deepcopy(neighboringsolution(currentsol))
         newcost = costfunction(newsol)
-        print("Current Cost: ", newcost)
+        # print("Current Cost: ", newcost)
         if newcost > currentcost:
             currentsol = newsol
             currentcost = newcost
@@ -301,8 +298,8 @@ def simulatedanealing():
                 currentsol = newsol
                 currentcost = newcost
         temp = temp - coolingrate
-        clear()
-    clear()
+    #     clear()
+    # clear()
     testFunction(bestsol)
     # print(bestsol)
     return createtable(bestsol)
